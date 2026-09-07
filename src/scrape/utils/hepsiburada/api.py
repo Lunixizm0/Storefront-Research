@@ -25,7 +25,7 @@ __all__ = [
 ]
 
 
-def _extract_product_ctx(soup, product_data):
+def _extract_product_ctx(soup, product_data) -> dict:
     ctx = {}
     debug("ctx.extract.start", sku=(product_data or {}).get("sku"))
 

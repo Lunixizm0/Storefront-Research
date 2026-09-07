@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 from bs4 import BeautifulSoup
 
@@ -33,7 +34,7 @@ def load_redux_store() -> dict | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_expected(name: str):
+def load_expected(name: str) -> Any:
     path = FIXTURES / "expected" / name
     if name.endswith(".json"):
         return json.loads(path.read_text(encoding="utf-8"))

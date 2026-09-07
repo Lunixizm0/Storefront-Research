@@ -51,6 +51,7 @@ class TestExtractProductCtx:
         soup = load_soup()
         product_data = extract_product_data(soup)
         ctx = _extract_product_ctx(soup, product_data)
+        assert ctx is not None
         expected = load_expected("product_ctx.json")
         assert ctx["sku"] == expected["sku"]
 

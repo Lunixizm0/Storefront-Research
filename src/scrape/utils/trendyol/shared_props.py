@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 
-def _extract_shared_props(soup):
+def _extract_shared_props(soup) -> dict | None:
     if not isinstance(soup, BeautifulSoup):
         debug("shared_props.skip", reason="no_soup")
         return None
@@ -383,10 +383,10 @@ def _sp_tag_ids(shared_props):
 def _sp_delivery(shared_props):
     sp = _sp_product(shared_props)
     if not sp:
-        return (None, None, None)
+        return (None, None)
     listing = sp.get("merchantListing")
     if not isinstance(listing, dict):
-        return (None, None, None)
+        return (None, None)
     winner = listing.get("winnerVariant")
     item_number = None
     listing_id = None

@@ -1,6 +1,8 @@
 # scrape.utils.trendyol package facade that keeps the module-level API
 
-from . import api, builders, common, dataset, http, parsing, shared_props
+from .api import *
+from .builders import *
+from .common import *
 from .common import (
     _extract_first_string,
     _format_price_value,
@@ -12,29 +14,86 @@ from .common import (
     parse_html,
     product_dataset_to_json,
 )
+from .dataset import *
+from .http import *
+from .parsing import *
+from .shared_props import *
 
-__all__: list[str] = (
-    [
-        "_extract_first_string",
-        "_format_price_value",
-        "_is_placeholder_description_text",
-        "_iter_json_ld_payloads",
-        "_normalize_json_value",
-        "_safe_api_call",
-        "_str",
-        "parse_html",
-        "product_dataset_to_json",
-    ]
-    + api.__all__
-    + builders.__all__
-    + common.__all__
-    + dataset.__all__
-    + http.__all__
-    + parsing.__all__
-    + shared_props.__all__
-)
-
-for _module in (api, builders, common, dataset, http, parsing, shared_props):
-    for _name in _module.__all__:
-        globals()[_name] = getattr(_module, _name)
-del _module, _name
+__all__: list[str] = [
+    "_BOILERPLATE_MARKERS",
+    "_build_complete_the_look",
+    "_build_currencies",
+    "_build_delivery",
+    "_build_description",
+    "_build_installments",
+    "_build_merchant_questions",
+    "_build_product_eligibility",
+    "_build_reviews",
+    "_build_seller_acceptance",
+    "_build_seller_follower",
+    "_build_seller_store",
+    "_build_slicing_attributes",
+    "_build_social_proof",
+    "_build_stamps",
+    "_build_stickers",
+    "_build_vas",
+    "_build_video",
+    "_contains_boilerplate",
+    "_detect_category_from_product_data",
+    "_detect_custom_data",
+    "_extract_attributes_dict",
+    "_extract_description_clean",
+    "_extract_first_string",
+    "_extract_image",
+    "_extract_listing_entry",
+    "_extract_listings_custom",
+    "_extract_reviews_custom",
+    "_extract_shared_props",
+    "_find_category_path_in_shared_props",
+    "_flatten_vas_attributes",
+    "_format_price_value",
+    "_is_placeholder_description_text",
+    "_iter_json_ld_payloads",
+    "_normalize_json_value",
+    "_safe_api_call",
+    "_sp_category_id",
+    "_sp_delivery",
+    "_sp_group_tag_ids",
+    "_sp_p_group_id",
+    "_sp_product",
+    "_sp_product_id",
+    "_sp_seller_id",
+    "_sp_selling_price",
+    "_sp_sticker_ids",
+    "_sp_tag_ids",
+    "_sp_video_id",
+    "_str",
+    "_strip_sentences_before_marker",
+    "build_product_dataset",
+    "extract_price",
+    "extract_price_from_product_data",
+    "extract_product_data",
+    "extract_product_dataset",
+    "get_common_api_headers",
+    "get_complete_the_look_from_api",
+    "get_currencies_from_api",
+    "get_delivery_date_from_api",
+    "get_installment_from_api",
+    "get_merchant_questions_from_api",
+    "get_product_descriptions_from_api",
+    "get_product_eligibility_from_api",
+    "get_raw_html",
+    "get_reviews_from_api",
+    "get_seller_acceptance_from_api",
+    "get_seller_follower_from_api",
+    "get_seller_store_from_api",
+    "get_slicing_attributes_from_api",
+    "get_social_proof_from_api",
+    "get_stamps_from_api",
+    "get_stickers_from_api",
+    "get_vas_from_api",
+    "get_video_content_from_api",
+    "parse_html",
+    "product_dataset_to_json",
+    "requests",
+]

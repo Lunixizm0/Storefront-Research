@@ -18,6 +18,7 @@ class TestExtractSharedProps:
         from scrape.utils.trendyol import _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         assert "product" in shared_props
         assert isinstance(shared_props["product"], dict)
 
@@ -25,6 +26,7 @@ class TestExtractSharedProps:
         from scrape.utils.trendyol import _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         product = shared_props["product"]
         assert "id" in product
 
@@ -32,6 +34,7 @@ class TestExtractSharedProps:
         from scrape.utils.trendyol import _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         product = shared_props["product"]
         assert "category" in product
         assert isinstance(product["category"], dict)
@@ -41,6 +44,7 @@ class TestExtractSharedProps:
         from scrape.utils.trendyol import _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         product = shared_props["product"]
         assert "brand" in product
         assert isinstance(product["brand"], dict)
@@ -49,6 +53,7 @@ class TestExtractSharedProps:
         from scrape.utils.trendyol import _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         product = shared_props["product"]
         ml = product.get("merchantListing")
         assert isinstance(ml, dict)
@@ -58,6 +63,7 @@ class TestExtractSharedProps:
         from scrape.utils.trendyol import _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         expected = load_expected("shared_props.json")
         # Core product id should match
         assert shared_props["product"]["id"] == expected["product"]["id"]
@@ -82,6 +88,7 @@ class TestDetectCategoryPath:
 
         shared_props = _extract_shared_props(load_soup())
         path = _find_category_path_in_shared_props(shared_props)
+        assert path is not None
         assert len(path) > 0
         assert all(isinstance(c, str) for c in path)
 

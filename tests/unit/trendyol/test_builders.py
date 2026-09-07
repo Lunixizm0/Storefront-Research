@@ -44,6 +44,7 @@ class TestFlattenVasAttributes:
         from scrape.utils.trendyol import _extract_shared_props, _flatten_vas_attributes
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         product = shared_props["product"]
         result = _flatten_vas_attributes(product.get("attributes"))
         expected = load_expected("vas_attributes.json")
@@ -113,6 +114,7 @@ class TestExtractListingEntry:
         from scrape.utils.trendyol import _extract_listing_entry, _extract_shared_props
 
         shared_props = _extract_shared_props(load_soup())
+        assert shared_props is not None
         product = shared_props["product"]
         merchant_raw = product.get("merchantListing", {}).get("merchant")
         if isinstance(merchant_raw, dict):

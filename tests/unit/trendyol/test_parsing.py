@@ -34,18 +34,21 @@ class TestExtractProductData:
         from scrape.utils.trendyol import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         assert product_data.get("@type") in ("Product", "ProductGroup")
 
     def test_has_name(self):
         from scrape.utils.trendyol import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         assert product_data.get("name") is not None
 
     def test_has_offers_with_price(self):
         from scrape.utils.trendyol import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         offers = product_data.get("offers")
         assert offers is not None
         assert offers.get("price") is not None
@@ -54,6 +57,7 @@ class TestExtractProductData:
         from scrape.utils.trendyol import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         expected = load_expected("product_data.json")
         assert product_data["name"] == expected["name"]
         assert product_data["sku"] == expected["sku"]
@@ -88,6 +92,7 @@ class TestExtractPrice:
 
         product_data = load_expected("product_data.json")
         price = extract_price(product_data)
+        assert price is not None
         # Should match pattern like "1234.56 TL"
         import re
 

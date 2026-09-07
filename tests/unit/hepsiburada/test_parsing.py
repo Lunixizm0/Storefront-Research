@@ -21,24 +21,28 @@ class TestExtractProductData:
         from scrape.utils.hepsiburada import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         assert product_data.get("@type") == "Product"
 
     def test_has_name(self):
         from scrape.utils.hepsiburada import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         assert product_data.get("name") is not None
 
     def test_has_sku(self):
         from scrape.utils.hepsiburada import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         assert product_data.get("sku") is not None
 
     def test_has_offers(self):
         from scrape.utils.hepsiburada import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         offers = product_data.get("offers")
         assert offers is not None
 
@@ -46,6 +50,7 @@ class TestExtractProductData:
         from scrape.utils.hepsiburada import extract_product_data
 
         product_data = extract_product_data(load_soup())
+        assert product_data is not None
         expected = load_expected("product_data.json")
         assert product_data["name"] == expected["name"]
         assert product_data["sku"] == expected["sku"]

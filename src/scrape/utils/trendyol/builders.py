@@ -48,6 +48,8 @@ def _build_reviews(product_data, shared_props):
     if not isinstance(result, dict):
         return None
     summary = result.get("summary") if isinstance(result.get("summary"), dict) else {}
+    if not isinstance(summary, dict):
+        summary = {}
     reviews = []
     for r in result.get("reviews") or []:
         if not isinstance(r, dict):

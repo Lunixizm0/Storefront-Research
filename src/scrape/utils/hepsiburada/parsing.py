@@ -50,7 +50,7 @@ def _extract_product_from_json_ld(payload):
     return None
 
 
-def extract_product_data(soup):
+def extract_product_data(soup) -> dict | None:
     if isinstance(soup, dict):
         return soup
     for payload in _iter_json_ld_payloads(soup):

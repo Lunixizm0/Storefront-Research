@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 
-def extract_product_data(soup):
+def extract_product_data(soup) -> dict | None:
     for payload in _iter_json_ld_payloads(soup):
         if not isinstance(payload, dict):
             continue
