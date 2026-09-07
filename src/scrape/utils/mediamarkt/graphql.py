@@ -6,20 +6,21 @@
 # GraphQL on initial load. GraphQL only supplies peripheral data such as media
 # content (videos) and loyalty points, which we fetch here as persisted queries.
 #
-# The GraphQL endpoint is behind Cloudflare and only serves the PWA's own
-# requests: queries must be sent as GETs carrying the persisted-query sha256
-# hash plus the `pwa` extensions block, along with the apollo/x-mms request
-# headers. A real browser TLS fingerprint (curl_cffi impersonation) and the
-# cookies set by a plain page GET are required; without them Cloudflare answers
-# 403 (missing headers), 429 (rate-limited / unknown fingerprint) or the API
-# answers 500 (missing `pwa` extensions block).
+# The GraphQL endpoint sits behind a Cloudflare-fronted gateway, but the queries
+# are served to plain HTTP clients: a GET carrying the persisted-query sha256
+# hash, the `pwa` extensions block and the apollo/x-mms request headers (plus
+# the `x-cacheable`/`x-operation`/`x-flow-id` gateway headers and
+# `Content-Type: application/json` + `Origin` for the Apollo CSRF check)
+# succeeds with plain `requests` - no browser TLS impersonation or cookies
+# needed. As a best-effort fallback on stricter egress the session GETs the page
+# first so Cloudflare issues its cookies, and on 403/429 it re-warms and retries.
 
 import json
 import os
 import time
 import uuid
 
-from curl_cffi import requests as _cffi_requests
+import requests as _requests
 
 from scrape.debug import DebugRequests, debug, warn
 
@@ -80,14 +81,15 @@ def _set_warmed(value):
 def _graphql_session():
     global _session
     if _session is None:
-        session = _cffi_requests.Session(impersonate="firefox133")
+        session = _requests.Session()
         session.headers.update({"User-Agent": _MM_UA})
         _session = DebugRequests(session)
     return _session
 
 
 def _warm_cookies(product_url=None):
-    # GET a page through the impersonated session so Cloudflare issues the `optid`/`__cf_bm` cookies the GraphQL endpoint expects
+    # GET a page through the session so Cloudflare issues the `optid`/`__cf_bm`
+    # cookies the GraphQL endpoint may expect on stricter egress
     warm_url = product_url or _HOME_URL
     session = _graphql_session()
     for attempt in range(3):

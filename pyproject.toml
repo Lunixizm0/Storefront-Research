@@ -6,7 +6,6 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "bs4>=0.0.2",
-    "curl-cffi>=0.16.3",
     "lxml>=6.1.2",
     "requests>=2.34.2",
 ]
@@ -19,6 +18,7 @@ lint.ignore = ["F401", "BLE001"]
 
 [tool.pyright]
 reportMissingImports = false
+typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

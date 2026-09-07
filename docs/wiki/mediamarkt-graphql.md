@@ -70,13 +70,13 @@ The `pwa` extensions block is mandatory - omitting it returns HTTP `500` from th
 
 ## Accessibility
 
-The endpoint is **behind Cloudflare** and rejects plain HTTP clients:
+The endpoint sits behind a Cloudflare-fronted gateway, but the queries are served to plain HTTP clients (the project verifies this with plain `requests`):
 
-- `403` - missing the apollo / `x-mms-*` request headers.
-- `403` / `429` - unknown TLS fingerprint (plain `requests` or `httpx`)
+- `403` - missing the apollo / `x-mms-*` request headers or the `x-cacheable` / `x-operation` / `x-flow-id` gateway headers.
+- `400` - `Content-Type: application/json` and/or `Origin` missing → blocked as a potential Cross-Site Request Forgery (CSRF).
 - `500` - missing the `pwa` extensions block.
 
-To mimic the browser the pipeline uses `curl_cffi` with `impersonate="firefox133"` (real-browser TLS/HTTP2 fingerprint) and first warms the session cookies by GET-ing the product page (or homepage) so Cloudflare issues `optid` / `__cf_bm`. On a `403`/`429` it re-warms the cookies, backs off, and retries (3 attempts). GraphQL is enabled by default; it can be disabled with `SCRAPE_MEDIAMARKT_GRAPHQL=0` (unit tests set this so the suite stays hermetic).
+With the full header set from [http.py](mediamarkt-README) (`apollographql-client-*`, `x-mms-*`, `x-cacheable`, `x-operation`, `x-flow-id`, `Content-Type: application/json`, `Origin`) a GET carrying the persisted query + `pwa` extensions block succeeds with plain `requests` - **no** `curl_cffi` TLS impersonation or browser `optid`/`__cf_bm` cookies required. The client still performs a best-effort page GET ("cookie warm-up") and on `403`/`429` re-warms the cookies, backs off, and retries (3 attempts) as a fallback for stricter networks. GraphQL is enabled by default; it can be disabled with `SCRAPE_MEDIAMARKT_GRAPHQL=0` (unit tests set this so the suite stays hermetic).
 
 ## Operations
 

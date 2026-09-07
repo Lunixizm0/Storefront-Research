@@ -29,19 +29,19 @@ Fetching the HTML itself works with a plain `requests` GET using full browser-na
 | `Host` | `www.mediamarkt.com.tr` |
 | `Sec-Fetch-Dest` / `-Mode` / `-Site` / `-User` | `document` / `navigate` / `none` / `?1` |
 
-### GraphQL endpoint (impersonated session)
+### GraphQL endpoint (plain `requests`)
 
-The GraphQL calls need the Apollo Client request headers (`_graphql_headers()` in `http.py`) **plus** a real-browser TLS fingerprint from `curl_cffi` and Cloudflare session cookies - see [graphql](mediamarkt-graphql).
+The GraphQL calls need the Apollo Client request headers (`_graphql_headers()` in `http.py`), the `x-cacheable`/`x-operation`/`x-flow-id` gateway headers, and `Content-Type: application/json` + `Origin` (Apollo CSRF check) - served to plain `requests`, no TLS impersonation or browser cookies - see [graphql](mediamarkt-graphql).
 
 ## Accessibility
 
 - The **HTML page** is retrievable with plain `requests`.
-- The **GraphQL endpoint** sits behind Cloudflare and only serves the PWA's own requests. It requires:
+- The **GraphQL endpoint** sits behind a Cloudflare-fronted gateway but serves plain HTTP clients. It requires:
   - a GET carrying the persisted-query `sha256Hash` and the `pwa` extensions block;
-  - all apollo / `x-mms-*` request headers (see [graphql](mediamarkt-graphql));
-  - a browser TLS impersonation (`curl_cffi` `firefox133`) and the `optid`/`__cf_bm` cookies issued by a prior plain page GET ("cookie warm-up").
+  - all apollo / `x-mms-*` request headers plus `x-cacheable`/`x-operation`/`x-flow-id` (see [graphql](mediamarkt-graphql));
+  - `Content-Type: application/json` and `Origin` to pass the Apollo CSRF check.
 
-Without these, Cloudflare answers `403` (missing headers), `429` (rate-limited / unknown fingerprint) or the API answers `500` (missing `pwa` extensions block).
+Missing headers answer `403` (gateway WAF), `400` (missing `Content-Type`/`Origin` → CSRF block) or `500` (missing `pwa` extensions block). A plain `requests` GET with the full header set returns `200`; as a best-effort fallback the client GETs the page first so Cloudflare issues `optid`/`__cf_bm` cookies and re-warms on `403`/`429`.
 
 ## Endpoint List
 

@@ -196,7 +196,7 @@ docs/
 
 - Python 3.13+
 - uv (package manager)
-- Dependencies: `requests`, `bs4`, `lxml`, `curl-cffi`
+- Dependencies: `requests`, `bs4`, `lxml`
 - Dev: `pytest`, `ruff`, `pyright`, `urllib3`
 
 ## Testing
@@ -262,9 +262,9 @@ See `docs/wiki/trendyol-README.md` for the full endpoint list, headers, and acce
 
 - product listings, withoutAffordability (discounted price + campaign), installment, other merchants, payment options, shipping due date, ask-to-seller, VAS
 
-See `docs/wiki/hepsiburada-README.md` for details. For Hepsiburada, Akamai `_abck` protection may require browser-session cookies; see that page for the accessibility details.
+See `docs/wiki/hepsiburada-README.md` for details. For Hepsiburada, Akamai `_abck` protection can be completely bypass, server doesnt check it.
 
-**MediaMarkt Türkiye** (`docs/wiki/mediamarkt-*.md`) is documented differently: the PDP exposes **no JSON-LD** - the core product aggregate (name, brand, price, image, description, features, category, availability, reviews, installments, VA services) lives entirely in the SSR-embedded Apollo cache `window.__PRELOADED_STATE__` - `apolloState`. On top of that, two GraphQL persisted queries (`GET https://www.mediamarkt.com.tr/api/v1/graphql`) return media content and loyalty points. Cloudflare requires `curl_cffi` `firefox133` impersonation plus a cookie warm-up for the GraphQL calls. Documentation:
+**MediaMarkt Türkiye** (`docs/wiki/mediamarkt-*.md`) is documented differently: the PDP exposes **no JSON-LD** - the core product aggregate (name, brand, price, image, description, features, category, availability, reviews, installments, VA services) lives entirely in the SSR-embedded Apollo cache `window.__PRELOADED_STATE__` - `apolloState`. On top of that, two GraphQL persisted queries (`GET https://www.mediamarkt.com.tr/api/v1/graphql`) return media content and loyalty points. The GraphQL endpoint is served to plain `requests`: a GET with the persisted-query hash, the `pwa` extensions block and the apollo/`x-mms-*`/gateway headers (plus `Content-Type` and `Origin` for the CSRF check) returns `200` - no `curl_cffi` impersonation or browser cookies needed, though the client keeps a best-effort cookie warm-up/retry fallback. Documentation:
 
 - `mediamarkt-README.md` - overview, base URL, common headers, endpoint index
 - `mediamarkt-preloaded_state.md` - Apollo cache extraction and schema
