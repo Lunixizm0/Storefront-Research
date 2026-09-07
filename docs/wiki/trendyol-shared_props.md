@@ -43,7 +43,7 @@ Key sample values (live fixture):
 | `brand` | object | `{ "id": 11079, "name": "Xiaomi" }` |
 | `category` | object | `{ "id": 1058, "name": "Kulak içi TWS Bluetooth Kulaklık", "hierarchy": "Elektronik/Giyilebilir Teknoloji/Kulaklıklar/Kulak içi TWS Bluetooth Kulaklık", "isVASEnabled": true, "isCreditSuitable": true, "bankType": {...} }` |
 | `webCategory` | object | `{ "id": 165994, "name": "Kulak İçi Bluetooth Kulaklık" }` |
-| `categoryTree` | array | 4 levels: Elektronik(1071) → Giyilebilir Teknoloji(1215) → Kulaklıklar(775) → Kulak içi TWS Bluetooth Kulaklık(1058); each `{ id, name, parent? }` |
+| `categoryTree` | array | 4 levels: Elektronik(1071) to Giyilebilir Teknoloji(1215) to Kulaklıklar(775) to Kulak içi TWS Bluetooth Kulaklık(1058); each `{ id, name, parent? }` |
 | `webCategoryTree` | array | 4 levels (leaf-first): `{ {"name": "Kulak İçi Bluetooth Kulaklık", "id": 165994, "level": 4}, ... {Elektronik, level: 1} }` |
 | `images` | array | `https://cdn.dsmcdn.com/ty1000319/.../1_org_zoom.jpg` (includes a `product-placeholder-v2.jpeg` fallback) |
 | `attributes` | array | VAS/product attributes (see below) |

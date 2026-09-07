@@ -14,6 +14,12 @@ from scrape.utils.hepsiburada import (
 from scrape.utils.hepsiburada import (
     get_raw_html as get_hepsiburada_html,
 )
+from scrape.utils.mediamarkt import (
+    extract_product_dataset as extract_mediamarkt_dataset,
+)
+from scrape.utils.mediamarkt import (
+    get_raw_html as get_mediamarkt_html,
+)
 from scrape.utils.trendyol import extract_product_dataset, get_raw_html, parse_html
 
 
@@ -40,6 +46,9 @@ def detect_provider(url: str) -> str:
     if "www.hepsiburada.com" == hostname:
         info("provider.detected", provider="hepsiburada", hostname=hostname)
         return "hepsiburada"
+    if "www.mediamarkt.com.tr" == hostname:
+        info("provider.detected", provider="mediamarkt", hostname=hostname)
+        return "mediamarkt"
     error("provider.unsupported", hostname=hostname, url=url)
     raise ValueError(f"Unsupported site: {url}")
 
@@ -94,6 +103,31 @@ def scrape_hepsiburada(url: str) -> dict:
     return payload
 
 
+def scrape_mediamarkt(url: str) -> dict:
+    info("scrape.start", provider="mediamarkt", url=url)
+    response = get_mediamarkt_html(url)
+    debug("page.status", provider="mediamarkt", status=response.status_code)
+    if response.status_code != 200:
+        raise RuntimeError(f"MediaMarkt request failed: {response.status_code}")
+
+    soup = parse_html(response.content)
+    dataset = extract_mediamarkt_dataset(soup, url=url)
+    if dataset is None:
+        raise RuntimeError(f"MediaMarkt product data not found: {url}")
+
+    payload = (
+        dataset.to_dict()
+        if isinstance(dataset, ProductDataset)
+        else json.loads(json.dumps(dataset, ensure_ascii=False))
+    )
+    info(
+        "scrape.complete",
+        provider="mediamarkt",
+        populated_fields=sum(value is not None for value in payload.values()),
+    )
+    return payload
+
+
 def _dispatch(url: str) -> dict:
     provider = detect_provider(url)
     info("dispatch", provider=provider)
@@ -101,6 +135,8 @@ def _dispatch(url: str) -> dict:
         return scrape_trendyol(url)
     if provider == "hepsiburada":
         return scrape_hepsiburada(url)
+    if provider == "mediamarkt":
+        return scrape_mediamarkt(url)
     raise ValueError(f"Unsupported provider: {provider}")
 
 

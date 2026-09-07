@@ -26,6 +26,12 @@ Documentation for the internal (storefront) APIs that the Storefront-Research pr
 - Embedded state (`script#reduxStore`): [redux-store](hepsiburada-redux_store)
 - Product description (DOM): [description](hepsiburada-description)
 
+## MediaMarkt (summary)
+
+- [MediaMarkt API Documentation](mediamarkt-README) - overview, base URL, common request headers, and the full endpoint list
+- Embedded state (`window.__PRELOADED_STATE__` to `apolloState`): [preloaded-state](mediamarkt-preloaded_state)
+- GraphQL persisted queries (media + loyalty points): [graphql](mediamarkt-graphql)
+
 ## Shared
 
 - Product dataset (output schema): [dataset-schema](dataset-schema)

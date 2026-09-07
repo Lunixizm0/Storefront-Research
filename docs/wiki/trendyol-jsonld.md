@@ -94,5 +94,5 @@ Each variant is a `Product` with its own `sku` (id), name, description, image, `
 
 - The block is discovered and parsed by `_iter_json_ld_payloads` (`src/scrape/utils/trendyol.py:384`) and `extract_product_data` (`:397`). `extract_product_data` returns a payload when `@type == "Product"`, or when it has both `offers` (dict) and `name` - which is how the `ProductGroup` block is matched.
 - There are exactly **2** `ld+json` scripts on the TY PDP (ProductGroup + WebPage). The Hepsiburada page instead carries a `WebPage + Product` block and a separate review-list array.
-- `aggregateRating` here uses `ratingCount` (107) plus a separate `reviewCount` (55). The richer rating data (average `4.349056603773585`, comment count `56`) lives in `__envoy__SHARED_PROPS` → `product.ratingScore`, not here.
-- The `price` value (`3839.00`) is the selling price shown in the JSON-LD; merchant/buy-box pricing and campaigns come from `__envoy__SHARED_PROPS` → `product.merchantListing.winnerVariant.price`.
+- `aggregateRating` here uses `ratingCount` (107) plus a separate `reviewCount` (55). The richer rating data (average `4.349056603773585`, comment count `56`) lives in `__envoy__SHARED_PROPS` to `product.ratingScore`, not here.
+- The `price` value (`3839.00`) is the selling price shown in the JSON-LD; merchant/buy-box pricing and campaigns come from `__envoy__SHARED_PROPS` to `product.merchantListing.winnerVariant.price`.

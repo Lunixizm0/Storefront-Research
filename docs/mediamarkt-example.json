@@ -1,0 +1,255 @@
+{
+  "source": "mediamarkt",
+  "category": "Şarjlı Dikey Süpürge",
+  "name": "DYSON V15 Detect Absolute Şarjlı Dikey Süpürge",
+  "brand": "DYSON",
+  "price": "34897.00 TL",
+  "currency": "TRY",
+  "url": "https://www.mediamarkt.com.tr/tr/product/_dyson-v15-detect-kablosuz-sarjli-dikey-supurge-sari-nikel-1232522.html",
+  "sku": "1232522",
+  "image": "https://assets.mmsrg.com/isr/166325/c1/-/ASSET_MMS_130158814",
+  "description": "Dyson V15 Detect Absolute şarjlı dikey süpürge, gelişmiş lazer teknolojisi ve emiş gücü sayesinde tüm yüzeylerde mükemmel temizlik sonuçları elde etmenizi sağlar. Çok işlevli yapısıyla halı, parke, laminant ve fayans gibi farklı zemin tiplerinde etkili performans sergiler. Lazer Gücüyle Tozu Görünür Kılan Teknoloji 240 W maksimum güç ile donatılan Dyson V15 Detect Absolute dikey süpürge, en zorlu kirlerle etkili şekilde mücadele eder. 14 siklon teknolojisi sayesinde mikroskobik parçacıkları dahi yakalayarak derinlemesine temizlik sağlar. Lazer teknolojisi ile gözle görülmeyen kir ve tozları tespit ederek hiçbir detayın gözden kaçmamasını sağlar. 0.76 litrelik toz haznesi küçük alanları tek seferde temizlemenize imkan verir. Uzun Ömürlü Batarya ile Özgürce Temizlik Olanağı 4.5 saatlik şarj süresi ile hızla hazır hale gelen batarya sistemi, maksimum 60 dakika kesintisiz kullanım sunar. Batarya göstergesi sayesinde kalan süreyi takip ederek temizlik planınızı buna göre düzenleyebilirsiniz. Kullanıcı Odaklı Tasarım 3.1 kg ağırlığı ve ergonomik tasarımı sayesinde uzun süreli kullanımda yorgunluk hissetmezsiniz. 89 dB(A) ses seviyesi ile çevreyi rahatsız etmeden temizlik yapabilirsiniz. Yıkanabilir Filtre ile Sürdürülebilir Temizlik Deneyimi Filtre temizliği sayesinde cihazınızın performansını uzun süre koruyarak ekonomik bir çözüm elde edebilirsiniz. HEPA filtre sistemi, evdeki toz ve polen gibi alerjik maddeleri maksimum oranda çeker. Akıllı Ekranla Anlık Performans Takibi Entegre akıllı ekran sistemiyle cihazın performansını anlık olarak takip edebilirsiniz. Batarya durumu, emiş gücü seviyeleri ve bakım gereksinimleri hakkında sürekli bilgi alabilirsiniz. Bu sayede Dyson süpürgenizi çok daha rahat bir şekilde kullanabilirsiniz.",
+  "availability": "OutOfStock",
+  "item_condition": null,
+  "reviews": {
+    "average_rating": 4.5909,
+    "count": 44,
+    "overall_rating_range": 5
+  },
+  "vas": [
+    {
+      "product_id": "1228334"
+    },
+    {
+      "product_id": "1228326"
+    },
+    {
+      "product_id": "1228330"
+    },
+    {
+      "product_id": "1224217"
+    },
+    {
+      "product_id": "1253134"
+    },
+    {
+      "product_id": "1209221"
+    },
+    {
+      "product_id": "1195456"
+    }
+  ],
+  "installments": {
+    "duration": 4,
+    "monthly_rate": 8724.25,
+    "total_amount": 34897
+  },
+  "custom_data": {
+    "price": 34897,
+    "shipping_cost": 39.99,
+    "promo_ids": [
+      "986422b2-241b-4010-b16a-a896d8068ad2"
+    ],
+    "vat_rate": 0.2,
+    "product_group_id": 736,
+    "ean": "5025155081754",
+    "tax": 20,
+    "manufacturer": "DYSON",
+    "manufacturer_id": "55",
+    "feature_name": "ŞARJLI ELEKTRİKLİ SÜPÜRGE",
+    "kind_of_product": "CORDLESS_VACUUM_CLEANER",
+    "raw_title": "V15 DETECT KABLOSUZ SUPURGE.",
+    "category_path": [
+      "Ev Aletleri & Yaşam",
+      "Süpürgeler",
+      "Dikey Süpürge",
+      "Şarjlı Dikey Süpürge"
+    ],
+    "loyalty_points": 3490,
+    "feature_groups": [
+      "Teknik özellikler",
+      "Filtre",
+      "Toz toplayıcı",
+      "Fırçalar",
+      "Ekipman",
+      "Güç kaynağı",
+      "Genel özellikleri",
+      "Enerji tüketim bilgisi"
+    ],
+    "status": {
+      "delivery": "NOT_AVAILABLE",
+      "delivery_status": "NOT_AVAILABLE",
+      "pickup": "PARTIALLY_AVAILABLE",
+      "pickup_status": "NO_STORE_SELECTED",
+      "online_status": "PERMANENTLY_NOT_AVAILABLE",
+      "is_available_for_pickup": false,
+      "is_available_and_buyable": false,
+      "is_in_assortment": true
+    },
+    "highlights": [
+      {
+        "name": "Ağırlık (Üreticiye Göre)",
+        "values": "3.1 kg"
+      },
+      {
+        "name": "Evcil Hayvan Fırçası",
+        "values": "Hayır"
+      },
+      {
+        "name": "Maksimum toz haznesi hacmi",
+        "values": "0.76 l"
+      },
+      {
+        "name": "Maksimum batarya süresi",
+        "values": "60"
+      }
+    ],
+    "full_features": {
+      "Teknik özellikler": [
+        {
+          "name": "Ürün Tipi",
+          "value": "Şarjlı Dikey Süpürge"
+        },
+        {
+          "name": "Sistem",
+          "value": "Şarjlı"
+        },
+        {
+          "name": "Yapı Şekli",
+          "value": "Şarjlı Dikey Süpürge"
+        },
+        {
+          "name": "Maksimum güç",
+          "value": "240"
+        },
+        {
+          "name": "Maksimum emme gücü",
+          "value": "240"
+        },
+        {
+          "name": "Ses Seviyesi",
+          "value": "89"
+        }
+      ],
+      "Filtre": [
+        {
+          "name": "Filtre tipi",
+          "value": "Yikanabilir Filtre"
+        },
+        {
+          "name": "Yıkanabilir filtre",
+          "value": "Evet"
+        }
+      ],
+      "Toz toplayıcı": [
+        {
+          "name": "Toz haznesi",
+          "value": "0.76"
+        },
+        {
+          "name": "Maksimum toz haznesi hacmi",
+          "value": "0.76"
+        }
+      ],
+      "Fırçalar": [
+        {
+          "name": "Evcil Hayvan Fırçası",
+          "value": "Hayır"
+        }
+      ],
+      "Ekipman": [
+        {
+          "name": "Islak/kuru emme fonksiyonu",
+          "value": "Hayır"
+        },
+        {
+          "name": "Özel Nitelikler",
+          "value": "14 Siklon"
+        }
+      ],
+      "Güç kaynağı": [
+        {
+          "name": "İşletim tipi",
+          "value": "Güç Adaptörü / Batarya / Akü"
+        },
+        {
+          "name": "Maksimum batarya süresi",
+          "value": "60"
+        },
+        {
+          "name": "Şarj Süresi",
+          "value": "4.5"
+        }
+      ],
+      "Genel özellikleri": [
+        {
+          "name": "Ürün Genişlik",
+          "value": "1260"
+        },
+        {
+          "name": "Ürün Yükseklik",
+          "value": "266"
+        },
+        {
+          "name": "Ürün Derinlik",
+          "value": "250"
+        },
+        {
+          "name": "Renk (Üreticiye Göre)",
+          "value": "Sarı Nikel"
+        },
+        {
+          "name": "Ağırlık (Üreticiye Göre)",
+          "value": "3.1 kg"
+        },
+        {
+          "name": "Ağırlık",
+          "value": "3.1"
+        },
+        {
+          "name": "Kutu İçeriği",
+          "value": "Digital Motorbar Temizleme Başlığı, Fluffy Optic Temizleme Başlığı, Aralık Temizleme Başlığı, Kombinasyon Başlığı, Şarj Cihazı, Duvar Askı Ünitesi "
+        },
+        {
+          "name": "Üretici Garantisi",
+          "value": "2 Yıl Resmi Distribütör Garantili"
+        },
+        {
+          "name": "Üretim Yeri",
+          "value": "Malezya"
+        }
+      ],
+      "Enerji tüketim bilgisi": [
+        {
+          "name": "Üretici firma",
+          "value": "DYSON"
+        }
+      ]
+    },
+    "va_services": [
+      {
+        "product_id": "1228334"
+      },
+      {
+        "product_id": "1228326"
+      },
+      {
+        "product_id": "1228330"
+      },
+      {
+        "product_id": "1224217"
+      },
+      {
+        "product_id": "1253134"
+      },
+      {
+        "product_id": "1209221"
+      },
+      {
+        "product_id": "1195456"
+      }
+    ],
+    "product_id": "1232522",
+    "url": "https://www.mediamarkt.com.tr/tr/product/_dyson-v15-detect-kablosuz-sarjli-dikey-supurge-sari-nikel-1232522.html"
+  }
+}

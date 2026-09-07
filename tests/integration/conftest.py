@@ -22,6 +22,12 @@ def _get_hepsiburada_urls(limit=5):
     return get_hepsiburada_product_urls(limit=limit)
 
 
+def _get_mediamarkt_urls(limit=5):
+    from tests.helpers._live_helpers import get_mediamarkt_product_urls
+
+    return get_mediamarkt_product_urls(limit=limit)
+
+
 def pytest_generate_tests(metafunc):
     if "trendyol_url" in metafunc.fixturenames:
         urls = _get_trendyol_urls(limit=5)
@@ -29,6 +35,9 @@ def pytest_generate_tests(metafunc):
     if "hepsiburada_url" in metafunc.fixturenames:
         urls = _get_hepsiburada_urls(limit=5)
         metafunc.parametrize("hepsiburada_url", urls)
+    if "mediamarkt_url" in metafunc.fixturenames:
+        urls = _get_mediamarkt_urls(limit=5)
+        metafunc.parametrize("mediamarkt_url", urls)
 
 
 @pytest.fixture(scope="session")
@@ -46,3 +55,11 @@ def live_trendyol_ids():
 @pytest.fixture(scope="session")
 def live_hepsiburada_sku():
     return "HBCV00004MW5Q6"
+
+
+@pytest.fixture(scope="session")
+def live_mediamarkt_ids():
+    return {
+        "product_id": "1232522",
+        "url": "https://www.mediamarkt.com.tr/tr/product/_dyson-v15-detect-kablosuz-sarjli-dikey-supurge-sari-nikel-1232522.html",
+    }

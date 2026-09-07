@@ -19,7 +19,7 @@ Captured from the live test product at `redux_store.json`:
 2. Takes `script.string`, finds the first `{` and the last `}`, and `json.loads` the slice.
 3. Returns the store dict, or `None` on missing tag / parse failure.
 
-The product-relevant subset is `store.productState.product`, reached via `_extract_redux_product(redux)` (`hepsiburada.py:248`) which unwraps `redux → productState → product`.
+The product-relevant subset is `store.productState.product`, reached via `_extract_redux_product(redux)` (`hepsiburada.py:248`) which unwraps `redux to productState to product`.
 
 ## Top-level state slices
 

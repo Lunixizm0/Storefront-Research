@@ -121,3 +121,60 @@ def get_hepsiburada_product_urls(limit=5):
         return urls
     except Exception:
         return []
+
+
+def _normalize_mediamarkt_url(value):
+    value = (value or "").strip()
+    if not value:
+        return None
+    value = value.split("#", 1)[0].split("?", 1)[0].strip("\"'")
+    if value.startswith(("http://", "https://")):
+        return value
+    if value.startswith("/"):
+        return f"https://www.mediamarkt.com.tr{value}"
+    return f"https://www.mediamarkt.com.tr/{value.lstrip('/')}"
+
+
+def _is_mediamarkt_product_url(value):
+    value = value or ""
+    return bool(re.search(r"/tr/product/.+-(\d+)\.html$", value))
+
+
+def _mediamarkt_page(url):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*",
+        "Accept-Language": "tr-TR,tr;q=0.9,en-US",
+        "Upgrade-Insecure-Requests": "1",
+    }
+    return requests.get(url, headers=headers, timeout=30)
+
+
+def get_mediamarkt_product_urls(limit=5):
+    # MediaMarkt server-renders actual product links on search pages category
+    # and homepage only surface a cached SSRed product for anonymous access.
+    queries = ["iphone", "samsung", "laptop", "televizyon", "kulakl%C4%B1k"]
+    seen = set()
+    urls = []
+    try:
+        for query in queries:
+            page_url = f"https://www.mediamarkt.com.tr/tr/search.html?query={query}"
+            resp = _mediamarkt_page(page_url)
+            if resp.status_code != 200:
+                continue
+            from bs4 import BeautifulSoup
+
+            soup = BeautifulSoup(resp.text, "html.parser")
+            for a in soup.find_all("a", href=True):
+                normalized = _normalize_mediamarkt_url(a["href"])
+                if not normalized or not _is_mediamarkt_product_url(normalized):
+                    continue
+                if normalized in seen:
+                    continue
+                seen.add(normalized)
+                urls.append(normalized)
+                if len(urls) >= limit:
+                    return urls
+        return urls
+    except Exception:
+        return []

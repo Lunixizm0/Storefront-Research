@@ -1,10 +1,10 @@
 # Storefront-Research - Turkish E-commerce Research
 
-My research about most popular turkish e-commerce platforms. Bundled with a Python web scraper for extracting structured product data from Turkish e-commerce platforms currently **Trendyol** and **Hepsiburada**.
+My research about most popular turkish e-commerce platforms. Bundled with a Python web scraper for extracting structured product data from Turkish e-commerce platforms currently **Trendyol**, **Hepsiburada** and **MediaMarkt Türkiye**.
 
 ## Overview
 
-Given a product URL from sites, the tool fetches the HTML page, parses embedded structured data (JSON-LD, Redux store state, shared props), uses **API integrations** to fetch richer product information via each platform's internal storefront APIs, and produces normalized JSON output containing product information.
+Given a product URL from sites, the tool fetches the HTML page, parses embedded structured data (JSON-LD, Redux store state, shared props, Apollo cache), uses **API integrations** to fetch richer product information via each platform's internal storefront APIs, and produces normalized JSON output containing product information.
 
 ## The Mindset
 
@@ -14,9 +14,10 @@ Anyone can crawl a page and read it. My question here is how the page was built 
 
 - **Trendyol** (`utils/trendyol/`): extracts product data from JSON-LD, `__envoy__SHARED_PROPS`, and 18+ internal APIs
 - **Hepsiburada** (`utils/hepsiburada/`): extracts from JSON-LD, Redux store (`reduxStore`), DOM and PDP APIs
+- **MediaMarkt Türkiye** (`utils/mediamarkt/`): extracts from the embedded Apollo cache (`window.__PRELOADED_STATE__` - `apolloState`) plus GraphQL persisted queries
 - **Unified CLI**: `scrape <product-url>` - auto-detects platform and dispatches to correct scraper
-- **Structured output**: `ProductDataset` dataclass with 12 fields, JSON serialization
-- **Description building**: fallback (API > cleaned JSON-LD > attribute synthesis)
+- **Structured output**: `ProductDataset` dataclass with 16 fields, JSON serialization
+- **Description building**: fallback (API > cleaned JSON-LD / embedded state > attribute synthesis)
 - **Turkish boilerplate filtering**: 35 common phrases filtered from descriptions
 
 ## Quick Start
@@ -30,6 +31,9 @@ uv run scrape "https://www.trendyol.com/brand/product-p-id"
 
 # Scrape a Hepsiburada product
 uv run scrape "https://www.hepsiburada.com/product-p-id"
+
+# Scrape a MediaMarkt product
+uv run scrape "https://www.mediamarkt.com.tr/tr/product/_product-1232522.html"
 
 # Print operation steps to stderr
 uv run scrape --debug "https://www.trendyol.com/brand/product-p-id"
@@ -51,7 +55,7 @@ uv run scrape --debug --out-std scrape.log "https://www.trendyol.com/brand/produ
 
 `--out FILE` writes the final dataset JSON to both a file and stdout. `--out-std FILE` additionally writes everything that reaches the terminal (stdout, debug, and HTTP body) to a log file. `--no-output` hides the final JSON from stdout; if `--out` is given the JSON is still written to the file. If no output option is given, the result is written to stdout, consistent with prior behavior.
 
-### See `docs/trendyol-example.json` and `docs/hepsiburada-example.json` for example output.
+### See `docs/trendyol-example.json`, `docs/hepsiburada-example.json` and `docs/mediamarkt-example.json` for example output.
 
 ## Project Structure
 
@@ -72,31 +76,41 @@ src/scrape/
     │   ├── http.py      # HTTP session, headers, cookies
     │   ├── parsing.py   # HTML/JSON-LD parsing
     │   └── shared_props.py # __envoy__SHARED_PROPS extraction
-    └── hepsiburada/     # Hepsiburada scraper (modular)
+    ├── hepsiburada/     # Hepsiburada scraper (modular)
+    │    ├── __init__.py  # Public exports
+    │    ├── __main__.py  # Module CLI for debugging
+    │    ├── api.py       # PDP storefront API client
+    │    ├── builders.py  # VAS, description, generic builders
+    │    ├── dataset.py   # Hepsiburada-specific dataset builders
+    │    ├── http.py      # HTTP session, Akamai handling
+    │    ├── parsing.py   # HTML/JSON-LD parsing
+    │    └── redux.py     # reduxStore extraction (in __init__)
+    └── mediamarkt/     # MediaMarkt scraper (modular)
         ├── __init__.py  # Public exports
         ├── __main__.py  # Module CLI for debugging
-        ├── api.py       # PDP storefront API client
-        ├── builders.py  # VAS, description, generic builders
-        ├── dataset.py   # Hepsiburada-specific dataset builders
-        ├── http.py      # HTTP session, Akamai handling
-        ├── parsing.py   # HTML/JSON-LD parsing
-        └── redux.py     # reduxStore extraction (in __init__)
+        ├── builders.py  # Category, price, VAS, custom_data builders
+        ├── dataset.py   # MediaMarkt-specific dataset builder
+        ├── graphql.py   # Persisted-query GraphQL client (media + loyalty)
+        ├── http.py      # HTTP session, Cloudflare cookie warm-up
+        └── parsing.py   # HTML / __PRELOADED_STATE__ / apolloState parsing
 tests/
 ├── conftest.py              # Root conftest: markers, fixture helpers
 ├── helpers/
 │   ├── __init__.py
 │   ├── _live_helpers.py     # Live URL fetchers for integration parametrization
 │   ├── trendyol_fixtures.py # Cached fixture loaders for Trendyol tests
-│   └── hepsiburada_fixtures.py # Cached fixture loaders for Hepsiburada tests
+│   ├── hepsiburada_fixtures.py # Cached fixture loaders for Hepsiburada tests
+│   └── mediamarkt_fixtures.py  # Cached fixture loaders for MediaMarkt tests
 ├── fixtures/
 │   ├── __init__.py
 │   ├── capture_fixtures.py  # One-time script to capture live fixture data
 │   ├── trendyol/            # HTML, API responses, expected outputs
 │   │   ├── api/             # 18+ captured API responses
 │   │   └── expected/        # Expected parsed outputs
-│   └── hepsiburada/         # HTML, redux store, API responses, expected outputs
-│       ├── api/             # Captured API responses
-│       └── expected/        # Expected parsed outputs
+│   ├── hepsiburada/         # HTML, redux store, API responses, expected outputs
+│   │    ├── api/             # Captured API responses
+│   │    └── expected/        # Expected parsed outputs
+│   └── mediamarkt/          # HTML, Apollo state, GraphQL responses, expected outputs
 ├── unit/
 │   ├── __init__.py
 │   ├── trendyol/
@@ -112,6 +126,11 @@ tests/
 │   │   ├── test_redux.py        # Redux store extraction
 │   │   ├── test_builders.py     # VAS building, description, generic check
 │   │   └── test_product_ctx.py  # Product context, category, availability
+│   ├── mediamarkt/
+│   │   ├── __init__.py
+│   │   ├── conftest.py          # Sets SCRAPE_MEDIAMARKT_GRAPHQL=0 for hermetic tests
+│   │   ├── test_parsing.py      # apolloState parsing, availability, breadcrumbs
+│   │   └── test_dataset.py      # Full dataset build from cached fixtures
 │   ├── test_cli_debug.py        # CLI debug/stdout/stderr behavior
 │   └── test_installments.py     # Trendyol installment plan field names
 └── integration/
@@ -121,9 +140,12 @@ tests/
     │   ├── __init__.py
     │   ├── test_live_scrape.py  # Parametrized live scrape tests
     │   └── test_live_apis.py    # 18 live Trendyol API tests
-    └── hepsiburada/
+    ├── hepsiburada/
         ├── __init__.py
         └── test_live_scrape.py  # Parametrized live scrape tests
+    └── mediamarkt/
+        ├── __init__.py
+        └── test_live_scrape.py  # Parametrized live scrape tests (Cloudflare)
 docs/
 ├── wiki/                       # GitHub Wiki content (auto-published via CI)
 │   ├── Home.md                      # Wiki landing page
@@ -161,16 +183,20 @@ docs/
 │   ├── hepsiburada-jsonld.md            # HTML-embedded structured data
 │   ├── hepsiburada-description.md       # Product description (DOM)
 │   ├── hepsiburada-redux_store.md       # Embedded reduxStore state
+│   ├── mediamarkt-README.md             # MediaMarkt documentation index
+│   ├── mediamarkt-preloaded_state.md    # __PRELOADED_STATE__ / Apollo cache
+│   ├── mediamarkt-graphql.md            # GraphQL persisted queries (media + loyalty)
 │   └── dataset-schema.md                # Product dataset output schema
 ├── trendyol-example.json           # Example raw Trendyol output
-└── hepsiburada-example.json        # Example raw Hepsiburada output
+├── hepsiburada-example.json        # Example raw Hepsiburada output
+└── mediamarkt-example.json         # Example raw MediaMarkt output
 ```
 
 ## Requirements
 
-- Python 3.14+
+- Python 3.13+
 - uv (package manager)
-- Dependencies: `requests`, `bs4`, `lxml`
+- Dependencies: `requests`, `bs4`, `lxml`, `curl-cffi`
 - Dev: `pytest`, `ruff`, `pyright`, `urllib3`
 
 ## Testing
@@ -188,6 +214,7 @@ uv run pytest                              # Runs unit tests only (default)
 uv run pytest tests/unit/ -v               # Explicit unit tests with verbose
 uv run pytest tests/unit/trendyol/         # Trendyol unit tests only
 uv run pytest tests/unit/hepsiburada/      # Hepsiburada unit tests only
+uv run pytest tests/unit/mediamarkt/       # MediaMarkt unit tests only
 ```
 
 ### Integration Tests
@@ -199,6 +226,7 @@ Needs ~4 minutes for all integration tests. (Will fix soon)
 uv run pytest tests/integration/ -v -m integration             # All integration tests
 uv run pytest tests/integration/trendyol/ -v -m integration    # Trendyol live tests
 uv run pytest tests/integration/hepsiburada/ -v -m integration # Hepsiburada live tests
+uv run pytest tests/integration/mediamarkt/ -v -m integration  # MediaMarkt live tests
 ```
 
 ### Fixture Capture
@@ -236,4 +264,10 @@ See `docs/wiki/trendyol-README.md` for the full endpoint list, headers, and acce
 
 See `docs/wiki/hepsiburada-README.md` for details. For Hepsiburada, Akamai `_abck` protection may require browser-session cookies; see that page for the accessibility details.
 
-Example raw outputs live at `docs/trendyol-example.json` and `docs/hepsiburada-example.json`.
+**MediaMarkt Türkiye** (`docs/wiki/mediamarkt-*.md`) is documented differently: the PDP exposes **no JSON-LD** - the core product aggregate (name, brand, price, image, description, features, category, availability, reviews, installments, VA services) lives entirely in the SSR-embedded Apollo cache `window.__PRELOADED_STATE__` - `apolloState`. On top of that, two GraphQL persisted queries (`GET https://www.mediamarkt.com.tr/api/v1/graphql`) return media content and loyalty points. Cloudflare requires `curl_cffi` `firefox133` impersonation plus a cookie warm-up for the GraphQL calls. Documentation:
+
+- `mediamarkt-README.md` - overview, base URL, common headers, endpoint index
+- `mediamarkt-preloaded_state.md` - Apollo cache extraction and schema
+- `mediamarkt-graphql.md` - persisted queries, `extensions` blocks, accessibility notes
+
+Example raw output lives at `docs/mediamarkt-example.json`.

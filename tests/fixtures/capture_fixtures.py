@@ -238,7 +238,48 @@ def capture_hepsiburada():
             _save_json(hb / "expected" / "vas_built.json", None)
 
 
+# mediamarkt
+MM_URL = "https://www.mediamarkt.com.tr/tr/product/_dyson-v15-detect-kablosuz-sarjli-dikey-supurge-sari-nikel-1232522.html"
+
+
+def capture_mediamarkt():
+    print("\n=== MediaMarkt ===")
+    from scrape.utils.mediamarkt import (
+        extract_product_data,
+        extract_product_dataset,
+        get_raw_html,
+        parse_html,
+        product_dataset_to_json,
+    )
+
+    mm = FIXTURES / "mediamarkt"
+
+    # 1. Fetch product page HTML
+    print("  fetching product page...")
+    resp = get_raw_html(MM_URL)
+    assert resp.status_code == 200, f"HTTP {resp.status_code}"
+    html_bytes = resp.content
+    (mm / "product_page.html").write_bytes(html_bytes)
+    print(f"  saved product_page.html ({len(html_bytes)} bytes)")
+
+    # 2. Parse and extract local data
+    soup = parse_html(html_bytes)
+    state, product_id = extract_product_data(soup, url=MM_URL)
+    assert state is not None, "No apollo state found"
+
+    _save_json(mm / "apollo_state.json", state)
+    print(f"  saved apollo_state.json ({len(state)} entities, product_id={product_id})")
+
+    dataset = extract_product_dataset(soup, url=MM_URL)
+    assert dataset is not None, "No dataset built"
+    _save_json(
+        mm / "expected_dataset.json", json.loads(product_dataset_to_json(dataset))
+    )
+    print(f"  saved expected_dataset.json (source={dataset.source}, sku={dataset.sku})")
+
+
 if __name__ == "__main__":
     capture_trendyol()
     capture_hepsiburada()
+    capture_mediamarkt()
     print("\nDone! Fixtures captured.")

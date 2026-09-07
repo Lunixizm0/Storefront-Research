@@ -8,6 +8,7 @@ wheels/
 .playwright-mcp
 tests/fixtures/hepsiburada
 tests/fixtures/trendyol
+tests/fixtures/mediamarkt
 # Virtual environments
 .venv
 .pytest_cache
