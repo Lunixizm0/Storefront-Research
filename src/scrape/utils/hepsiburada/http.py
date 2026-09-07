@@ -1,10 +1,18 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import requests as _requests
 
 from scrape.debug import DebugRequests, request_get
 
-__all__ = ["_HEPB_UA", "_api_headers", "_goto_referer", "_to_int_list", "get_raw_html", "requests"]
+__all__ = [
+    "_HEPB_UA",
+    "_api_headers",
+    "_goto_referer",
+    "_to_int_list",
+    "get_raw_html",
+    "requests",
+]
+
 
 def get_raw_html(url):
     headers = {
@@ -23,8 +31,10 @@ def get_raw_html(url):
     response = request_get(_requests, url, headers=headers, timeout=30)
     return response
 
+
 def _goto_referer(product_url):
     return product_url if product_url else "https://www.hepsiburada.com"
+
 
 def _to_int_list(values):
     out = []
@@ -34,6 +44,7 @@ def _to_int_list(values):
         except (TypeError, ValueError):
             pass
     return out
+
 
 def _api_headers(product_url=None, is_post=False):
     headers = {
@@ -46,6 +57,9 @@ def _api_headers(product_url=None, is_post=False):
         headers["Origin"] = "https://www.hepsiburada.com"
     return headers
 
-_HEPB_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0"
+
+_HEPB_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0"
+)
 
 requests = DebugRequests(_requests)

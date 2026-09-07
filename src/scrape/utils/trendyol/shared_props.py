@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import json
 
@@ -8,7 +8,26 @@ from scrape.debug import debug
 
 from .common import _extract_first_string
 
-__all__ = ["_detect_custom_data", "_extract_listing_entry", "_extract_listings_custom", "_extract_reviews_custom", "_extract_shared_props", "_find_category_path_in_shared_props", "_sp_category_id", "_sp_delivery", "_sp_group_tag_ids", "_sp_p_group_id", "_sp_product", "_sp_product_id", "_sp_seller_id", "_sp_selling_price", "_sp_sticker_ids", "_sp_tag_ids", "_sp_video_id"]
+__all__ = [
+    "_detect_custom_data",
+    "_extract_listing_entry",
+    "_extract_listings_custom",
+    "_extract_reviews_custom",
+    "_extract_shared_props",
+    "_find_category_path_in_shared_props",
+    "_sp_category_id",
+    "_sp_delivery",
+    "_sp_group_tag_ids",
+    "_sp_p_group_id",
+    "_sp_product",
+    "_sp_product_id",
+    "_sp_seller_id",
+    "_sp_selling_price",
+    "_sp_sticker_ids",
+    "_sp_tag_ids",
+    "_sp_video_id",
+]
+
 
 def _extract_shared_props(soup):
     if not isinstance(soup, BeautifulSoup):
@@ -65,6 +84,7 @@ def _extract_shared_props(soup):
     debug("shared_props.not_found")
     return None
 
+
 def _extract_reviews_custom(product_data, shared_props):
     if isinstance(shared_props, dict):
         product = shared_props.get("product")
@@ -94,6 +114,7 @@ def _extract_reviews_custom(product_data, shared_props):
 
     return None
 
+
 def _extract_listing_entry(merchant_dict):
     if not isinstance(merchant_dict, dict):
         return None
@@ -113,6 +134,7 @@ def _extract_listing_entry(merchant_dict):
                 if isinstance(original, dict) and original.get("value") is not None:
                     entry["original_price"] = original["value"]
     return entry
+
 
 def _extract_listings_custom(shared_props):
     if not isinstance(shared_props, dict):
@@ -152,6 +174,7 @@ def _extract_listings_custom(shared_props):
         return None
     return listings
 
+
 def _find_category_path_in_shared_props(node, depth=0):
     if depth > 8 or node is None:
         return None
@@ -174,6 +197,7 @@ def _find_category_path_in_shared_props(node, depth=0):
             if found:
                 return found
     return None
+
 
 def _detect_custom_data(product_data, shared_props=None):
     custom = {}
@@ -236,11 +260,13 @@ def _detect_custom_data(product_data, shared_props=None):
     debug("ty.custom_data.done", keys=list(custom.keys()))
     return custom
 
+
 def _sp_product(shared_props):
     if not isinstance(shared_props, dict):
         return None
     product = shared_props.get("product")
     return product if isinstance(product, dict) else None
+
 
 def _sp_product_id(product_data, shared_props):
     pid = product_data.get("sku") if isinstance(product_data, dict) else None
@@ -249,6 +275,7 @@ def _sp_product_id(product_data, shared_props):
         if sp:
             pid = sp.get("id")
     return pid
+
 
 def _sp_seller_id(shared_props):
     sp = _sp_product(shared_props)
@@ -261,6 +288,7 @@ def _sp_seller_id(shared_props):
             return merchant.get("id")
     return None
 
+
 def _sp_category_id(shared_props):
     sp = _sp_product(shared_props)
     if not sp:
@@ -269,6 +297,7 @@ def _sp_category_id(shared_props):
     if isinstance(category, dict):
         return category.get("id")
     return None
+
 
 def _sp_selling_price(shared_props):
     sp = _sp_product(shared_props)
@@ -291,6 +320,7 @@ def _sp_selling_price(shared_props):
         return discounted["value"]
     return None
 
+
 def _sp_group_tag_ids(shared_props):
     sp = _sp_product(shared_props)
     if not sp:
@@ -300,6 +330,7 @@ def _sp_group_tag_ids(shared_props):
         if val:
             return val
     return None
+
 
 def _sp_video_id(shared_props):
     sp = _sp_product(shared_props)
@@ -315,6 +346,7 @@ def _sp_video_id(shared_props):
             return val
     return None
 
+
 def _sp_p_group_id(shared_props):
     sp = _sp_product(shared_props)
     if not sp:
@@ -324,6 +356,7 @@ def _sp_p_group_id(shared_props):
         if val:
             return val
     return None
+
 
 def _sp_sticker_ids(shared_props):
     sp = _sp_product(shared_props)
@@ -335,6 +368,7 @@ def _sp_sticker_ids(shared_props):
             return val
     return None
 
+
 def _sp_tag_ids(shared_props):
     sp = _sp_product(shared_props)
     if not sp:
@@ -344,6 +378,7 @@ def _sp_tag_ids(shared_props):
         if val:
             return val
     return None
+
 
 def _sp_delivery(shared_props):
     sp = _sp_product(shared_props)

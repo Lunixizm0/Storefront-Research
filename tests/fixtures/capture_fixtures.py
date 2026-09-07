@@ -1,4 +1,4 @@
-#One-time script to capture live fixture data
+# One-time script to capture live fixture data
 
 import json
 import sys
@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 FIXTURES = Path(__file__).resolve().parent
 
-#ty
+# ty
 TY_URL = "https://www.trendyol.com/oci/xiaomi-14t-pro-256-g-p-1081766367"
 TY_PRODUCT_ID = "1081766367"
 TY_SELLER_ID = "624588"
@@ -111,21 +111,41 @@ def capture_trendyol():
     api = ty / "api"
 
     _save_json(api / "reviews.json", get_reviews_from_api(TY_PRODUCT_ID))
-    _save_json(api / "component_read.json", get_product_descriptions_from_api(TY_PRODUCT_ID))
-    _save_json(api / "delivery_date.json", get_delivery_date_from_api(TY_PRODUCT_ID, TY_ITEM_NUMBER, TY_LISTING_ID))
-    _save_json(api / "installment.json", get_installment_from_api(4199, 1058, "eac211e6-2e86-42fa-a755-87479743934a"))
-    _save_json(api / "merchant_questions.json", get_merchant_questions_from_api(TY_PRODUCT_ID))
-    _save_json(api / "seller_acceptance.json", get_seller_acceptance_from_api(TY_SELLER_ID))
+    _save_json(
+        api / "component_read.json", get_product_descriptions_from_api(TY_PRODUCT_ID)
+    )
+    _save_json(
+        api / "delivery_date.json",
+        get_delivery_date_from_api(TY_PRODUCT_ID, TY_ITEM_NUMBER, TY_LISTING_ID),
+    )
+    _save_json(
+        api / "installment.json",
+        get_installment_from_api(4199, 1058, "eac211e6-2e86-42fa-a755-87479743934a"),
+    )
+    _save_json(
+        api / "merchant_questions.json", get_merchant_questions_from_api(TY_PRODUCT_ID)
+    )
+    _save_json(
+        api / "seller_acceptance.json", get_seller_acceptance_from_api(TY_SELLER_ID)
+    )
     _save_json(api / "video_content.json", get_video_content_from_api(TY_VIDEO_ID))
     _save_json(api / "currencies.json", get_currencies_from_api())
     _save_json(api / "stickers.json", get_stickers_from_api("1044"))
-    _save_json(api / "complete_the_look.json", get_complete_the_look_from_api(TY_PRODUCT_ID))
-    _save_json(api / "slicing_attributes.json", get_slicing_attributes_from_api(TY_GROUP_ID, TY_PRODUCT_ID))
+    _save_json(
+        api / "complete_the_look.json", get_complete_the_look_from_api(TY_PRODUCT_ID)
+    )
+    _save_json(
+        api / "slicing_attributes.json",
+        get_slicing_attributes_from_api(TY_GROUP_ID, TY_PRODUCT_ID),
+    )
     _save_json(api / "social_proof.json", get_social_proof_from_api(TY_PRODUCT_ID))
     _save_json(api / "seller_store.json", get_seller_store_from_api(TY_SELLER_ID))
     _save_json(api / "seller_follower.json", get_seller_follower_from_api(TY_SELLER_ID))
     _save_json(api / "stamps.json", get_stamps_from_api("4905,8581,9637"))
-    _save_json(api / "product_eligibility.json", get_product_eligibility_from_api(1058, 13, 4199))
+    _save_json(
+        api / "product_eligibility.json",
+        get_product_eligibility_from_api(1058, 13, 4199),
+    )
     _save_json(api / "vas.json", get_vas_from_api(shared_props=shared_props))
 
 
@@ -194,7 +214,9 @@ def capture_hepsiburada():
     print("  fetching VAS API...")
     api = hb / "api"
     try:
-        vas_resp = get_vas_from_api(HB_SKU, product_url=HB_URL, product_data=product_data, soup=soup)
+        vas_resp = get_vas_from_api(
+            HB_SKU, product_url=HB_URL, product_data=product_data, soup=soup
+        )
         _save_json(api / "vas.json", vas_resp)
         _save_json(hb / "expected" / "vas_built.json", _build_vas(vas_resp))
     except Exception as e:
@@ -202,8 +224,11 @@ def capture_hepsiburada():
         ctx = _extract_product_ctx(soup, product_data)
         try:
             vas_resp = get_vas_from_api(
-                HB_SKU, product_url=HB_URL, product_data=product_data,
-                soup=soup, ctx_dict=ctx,
+                HB_SKU,
+                product_url=HB_URL,
+                product_data=product_data,
+                soup=soup,
+                ctx_dict=ctx,
             )
             _save_json(api / "vas.json", vas_resp)
             _save_json(hb / "expected" / "vas_built.json", _build_vas(vas_resp))

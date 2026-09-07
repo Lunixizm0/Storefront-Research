@@ -1,4 +1,4 @@
-#Unit tests for Hepsiburada builder/helper functions - zero network
+# Unit tests for Hepsiburada builder/helper functions - zero network
 from __future__ import annotations
 
 from tests.helpers.hepsiburada_fixtures import (
@@ -81,12 +81,22 @@ class TestIsGenericDescription:
     def test_generic_returns_true(self):
         from scrape.utils.hepsiburada import _is_generic_hepsiburada_description
 
-        assert _is_generic_hepsiburada_description("En iyi fiyatla hepsiburadadan alabilirsiniz.") is True
+        assert (
+            _is_generic_hepsiburada_description(
+                "En iyi fiyatla hepsiburadadan alabilirsiniz."
+            )
+            is True
+        )
 
     def test_real_returns_false(self):
         from scrape.utils.hepsiburada import _is_generic_hepsiburada_description
 
-        assert _is_generic_hepsiburada_description("Bu ürün Razer tarafından üretilmiştir.") is False
+        assert (
+            _is_generic_hepsiburada_description(
+                "Bu ürün Razer tarafından üretilmiştir."
+            )
+            is False
+        )
 
     def test_none_returns_false(self):
         from scrape.utils.hepsiburada import _is_generic_hepsiburada_description

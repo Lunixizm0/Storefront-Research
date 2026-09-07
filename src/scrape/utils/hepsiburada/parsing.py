@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import json
 import re
@@ -14,7 +14,25 @@ from ..trendyol.common import (
     _iter_json_ld_payloads,
 )
 
-__all__ = ["_META_FIELDS", "_build_description", "_clean_description_text", "_detect_category", "_extract_attribute_fallback_description", "_extract_availability", "_extract_custom_data", "_extract_description_from_dom", "_extract_image", "_extract_product_from_json_ld", "_extract_redux_product", "_extract_redux_store", "_is_generic_hepsiburada_description", "_strip_placeholder_tokens", "extract_price", "extract_product_data"]
+__all__ = [
+    "_META_FIELDS",
+    "_build_description",
+    "_clean_description_text",
+    "_detect_category",
+    "_extract_attribute_fallback_description",
+    "_extract_availability",
+    "_extract_custom_data",
+    "_extract_description_from_dom",
+    "_extract_image",
+    "_extract_product_from_json_ld",
+    "_extract_redux_product",
+    "_extract_redux_store",
+    "_is_generic_hepsiburada_description",
+    "_strip_placeholder_tokens",
+    "extract_price",
+    "extract_product_data",
+]
+
 
 def _extract_product_from_json_ld(payload):
     if not isinstance(payload, dict):
@@ -31,6 +49,7 @@ def _extract_product_from_json_ld(payload):
 
     return None
 
+
 def extract_product_data(soup):
     if isinstance(soup, dict):
         return soup
@@ -41,6 +60,7 @@ def extract_product_data(soup):
             return product
     warn("product_data.missing", source="json_ld", provider="hepsiburada")
     return None
+
 
 def extract_price(product_data_or_soup):
     if isinstance(product_data_or_soup, dict):
@@ -85,6 +105,7 @@ def _extract_redux_store(soup):
         warn("redux_store.invalid", provider="hepsiburada")
         return None
 
+
 def _extract_description_from_dom(soup):
     if not isinstance(soup, BeautifulSoup):
         return None
@@ -114,11 +135,13 @@ def _extract_description_from_dom(soup):
 
     return best
 
+
 def _clean_description_text(value):
     if not value:
         return None
     cleaned = " ".join(str(value).split())
     return cleaned or None
+
 
 def _strip_placeholder_tokens(text):
 
@@ -127,6 +150,7 @@ def _strip_placeholder_tokens(text):
         r"\s+(?:STD|N/?A|NONE|NA|NUL)\s*$", "", cleaned, flags=re.IGNORECASE
     )
     return cleaned.strip()
+
 
 _META_FIELDS = {
     "name",
@@ -148,6 +172,7 @@ _META_FIELDS = {
     "potentialAction",
     "additionalType",
 }
+
 
 def _extract_attribute_fallback_description(product_data):
     if not isinstance(product_data, dict):
@@ -174,6 +199,7 @@ def _extract_attribute_fallback_description(product_data):
         heading = f"{name}." if name else ""
         return f"{heading} {'. '.join(snippets)}.".strip()
     return None
+
 
 def _build_description(soup, product_data):
     parts = []
@@ -209,8 +235,12 @@ def _build_description(soup, product_data):
             return fallback
         debug("desc.none")
         return None
-    debug("desc.ok", source="dom" if len(parts) == 1 and parts[0] == dom_description else "combined")
+    debug(
+        "desc.ok",
+        source="dom" if len(parts) == 1 and parts[0] == dom_description else "combined",
+    )
     return " ".join(parts)
+
 
 def _is_generic_hepsiburada_description(value):
     if not value:
@@ -225,6 +255,7 @@ def _is_generic_hepsiburada_description(value):
     )
     return any(marker in normalized for marker in markers)
 
+
 def _extract_redux_product(redux):
     if not isinstance(redux, dict):
         return None
@@ -236,6 +267,7 @@ def _extract_redux_product(redux):
         return None
     return product
 
+
 def _extract_image(product_data):
     image = product_data.get("image")
     if isinstance(image, list):
@@ -245,6 +277,7 @@ def _extract_image(product_data):
     if isinstance(image, str):
         return image.replace("{size}", "375")
     return None
+
 
 def _detect_category(product_data, redux_product):
     if isinstance(redux_product, dict):
@@ -263,6 +296,7 @@ def _detect_category(product_data, redux_product):
         return category
     return "unknown"
 
+
 def _extract_availability(product_data, redux_product):
     offers = product_data.get("offers")
     if isinstance(offers, dict) and offers.get("availability"):
@@ -272,6 +306,7 @@ def _extract_availability(product_data, redux_product):
             return "https://schema.org/InStock"
         return "https://schema.org/OutOfStock"
     return None
+
 
 def _extract_custom_data(product_data, redux_product):
     custom = {}

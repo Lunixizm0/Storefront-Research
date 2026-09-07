@@ -3,6 +3,7 @@ if __name__ == "__main__":
 
     from scrape.dataset import ProductDataset
     from scrape.utils import hepsiburada
+
     url = "https://www.hepsiburada.com/karaca-tea-break-inox-siyah-celik-su-isitici-cay-makinesi-pm-HBC00002JH1M2"
     dataset = hepsiburada.extract_product_dataset(url)
     if isinstance(dataset, ProductDataset):

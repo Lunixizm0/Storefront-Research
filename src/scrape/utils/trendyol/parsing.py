@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import re
 
@@ -7,7 +7,20 @@ from scrape.debug import debug, warn
 from .api import get_product_descriptions_from_api
 from .common import _extract_first_string, _format_price_value, _iter_json_ld_payloads
 
-__all__ = ["_BOILERPLATE_MARKERS", "_build_description", "_contains_boilerplate", "_detect_category_from_product_data", "_extract_attributes_dict", "_extract_description_clean", "_extract_image", "_strip_sentences_before_marker", "extract_price", "extract_price_from_product_data", "extract_product_data"]
+__all__ = [
+    "_BOILERPLATE_MARKERS",
+    "_build_description",
+    "_contains_boilerplate",
+    "_detect_category_from_product_data",
+    "_extract_attributes_dict",
+    "_extract_description_clean",
+    "_extract_image",
+    "_strip_sentences_before_marker",
+    "extract_price",
+    "extract_price_from_product_data",
+    "extract_product_data",
+]
+
 
 def extract_product_data(soup):
     for payload in _iter_json_ld_payloads(soup):
@@ -25,6 +38,7 @@ def extract_product_data(soup):
 
     warn("product_data.missing", source="json_ld")
     return None
+
 
 def extract_price(product_data_or_soup):
     if isinstance(product_data_or_soup, dict):
@@ -47,8 +61,10 @@ def extract_price(product_data_or_soup):
 
     return None
 
+
 def extract_price_from_product_data(product_data):
     return extract_price(product_data)
+
 
 def _detect_category_from_product_data(product_data):
     if not isinstance(product_data, dict):
@@ -65,6 +81,7 @@ def _detect_category_from_product_data(product_data):
             return candidate
 
     return "unknown"
+
 
 def _extract_attributes_dict(product_data):
     attributes = {}
@@ -89,6 +106,7 @@ def _extract_attributes_dict(product_data):
             if key and value:
                 attributes[key] = value
     return attributes
+
 
 _BOILERPLATE_MARKERS = (
     "tarafından gönderilecektir",
@@ -124,12 +142,14 @@ _BOILERPLATE_MARKERS = (
     "satılmak üzere",
 )
 
+
 def _contains_boilerplate(text: str) -> bool:
     lower = " ".join(text.split()).lower()
     for marker in _BOILERPLATE_MARKERS:
         if marker in lower:
             return True
     return bool(re.search(r"\[page", text))
+
 
 def _strip_sentences_before_marker(text: str) -> str:
     if not text:
@@ -150,12 +170,14 @@ def _strip_sentences_before_marker(text: str) -> str:
 
     return " ".join(kept).strip()
 
+
 def _extract_description_clean(product_data):
     raw = product_data.get("description")
     if isinstance(raw, str):
         cleaned = _strip_sentences_before_marker(raw)
         return cleaned or None
     return None
+
 
 def _build_description(product_data):
     if not isinstance(product_data, dict):
@@ -192,6 +214,7 @@ def _build_description(product_data):
 
     debug("ty.desc.ok", source="jsonld_fallback", sku=sku)
     return _extract_first_string(product_data.get("description"))
+
 
 def _extract_image(product_data):
     image = product_data.get("image")

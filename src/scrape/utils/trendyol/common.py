@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import json
 from typing import Any
@@ -7,7 +7,18 @@ from bs4 import BeautifulSoup
 
 from scrape.debug import debug, error, info
 
-__all__ = ["_extract_first_string", "_format_price_value", "_is_placeholder_description_text", "_iter_json_ld_payloads", "_normalize_json_value", "_safe_api_call", "_str", "parse_html", "product_dataset_to_json"]
+__all__ = [
+    "_extract_first_string",
+    "_format_price_value",
+    "_is_placeholder_description_text",
+    "_iter_json_ld_payloads",
+    "_normalize_json_value",
+    "_safe_api_call",
+    "_str",
+    "parse_html",
+    "product_dataset_to_json",
+]
+
 
 def _is_placeholder_description_text(value):
     if value is None:
@@ -32,11 +43,13 @@ def _is_placeholder_description_text(value):
 
     return len(normalized) <= 3 and normalized.isalpha()
 
+
 def parse_html(html_content):
     debug("html.parse", bytes=len(html_content or b""))
     soup = BeautifulSoup(html_content, "html.parser")
     debug("html.parsed", scripts=len(soup.select("script")))
     return soup
+
 
 def _iter_json_ld_payloads(soup):
     for script in soup.select("script[type='application/ld+json']"):
@@ -50,6 +63,7 @@ def _iter_json_ld_payloads(soup):
 
         yield payload
 
+
 def _format_price_value(value):
     if value is None:
         return None
@@ -57,6 +71,7 @@ def _format_price_value(value):
         return f"{float(value):.2f} TL"
     except (TypeError, ValueError):
         return None
+
 
 def _normalize_json_value(value: Any) -> Any:
     if value is None or isinstance(value, (str, int, float, bool)):
@@ -67,11 +82,13 @@ def _normalize_json_value(value: Any) -> Any:
         return [_normalize_json_value(item) for item in value]
     return str(value)
 
+
 def _str(value: Any) -> str | None:
     normalized = _normalize_json_value(value)
     if normalized is None or isinstance(normalized, str):
         return normalized
     return str(normalized)
+
 
 def _extract_first_string(value):
     if value is None:
@@ -91,6 +108,7 @@ def _extract_first_string(value):
                 return candidate
     return str(value)
 
+
 def _safe_api_call(fn, *args, **kwargs):
     api_name = getattr(fn, "__name__", str(fn))
     info("api.builder.start", builder=api_name)
@@ -101,6 +119,7 @@ def _safe_api_call(fn, *args, **kwargs):
     except Exception as e:
         error("api.builder.error", builder=api_name, error=f"{type(e).__name__}: {e}")
         return None
+
 
 def product_dataset_to_json(dataset):
     if hasattr(dataset, "to_json"):

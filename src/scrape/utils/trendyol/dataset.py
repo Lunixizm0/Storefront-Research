@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 from scrape.dataset import ProductDataset
 from scrape.debug import debug, warn
@@ -33,6 +33,7 @@ from .shared_props import _detect_custom_data, _extract_shared_props
 
 __all__ = ["build_product_dataset", "extract_product_dataset"]
 
+
 def build_product_dataset(
     product_data, category="unknown", custom_data=None, soup=None
 ):
@@ -41,7 +42,11 @@ def build_product_dataset(
         return None
 
     shared_props = _extract_shared_props(soup) if soup is not None else None
-    debug("dataset.build.start", provider="trendyol", shared_props_found=shared_props is not None)
+    debug(
+        "dataset.build.start",
+        provider="trendyol",
+        shared_props_found=shared_props is not None,
+    )
 
     offers_raw = product_data.get("offers")
     offers = offers_raw if isinstance(offers_raw, dict) else {}
@@ -116,9 +121,14 @@ def build_product_dataset(
         custom_data=merged_custom_data if isinstance(merged_custom_data, dict) else {},
     )
 
+
 def extract_product_dataset(soup, category="unknown", custom_data=None):
     product_data = extract_product_data(soup)
-    debug("dataset.extract", provider="trendyol", product_data_found=product_data is not None)
+    debug(
+        "dataset.extract",
+        provider="trendyol",
+        product_data_found=product_data is not None,
+    )
     return build_product_dataset(
         product_data, category=category, custom_data=custom_data, soup=soup
     )

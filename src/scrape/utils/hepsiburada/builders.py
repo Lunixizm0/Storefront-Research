@@ -1,10 +1,25 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 
-__all__ = ["_build_ask_to_seller", "_build_discount_rate", "_build_installment_offer", "_build_other_merchants", "_build_payment_options", "_build_pricing", "_build_shipping", "_build_vas", "_build_without_affordability", "_is_hepb_response_dict", "_kurus_amount", "_listing_price_value"]
+__all__ = [
+    "_build_ask_to_seller",
+    "_build_discount_rate",
+    "_build_installment_offer",
+    "_build_other_merchants",
+    "_build_payment_options",
+    "_build_pricing",
+    "_build_shipping",
+    "_build_vas",
+    "_build_without_affordability",
+    "_is_hepb_response_dict",
+    "_kurus_amount",
+    "_listing_price_value",
+]
+
 
 def _is_hepb_response_dict(data):
     return isinstance(data, dict) and data.get("statusCode") == 200
+
 
 def _listing_price_value(listing, key):
     if isinstance(listing, dict):
@@ -14,11 +29,13 @@ def _listing_price_value(listing, key):
         return v
     return None
 
+
 def _kurus_amount(value):
     try:
         return round(float(value) * 100)
     except (TypeError, ValueError):
         return 0
+
 
 def _build_pricing(pricing_data, promo_data):
     if not isinstance(pricing_data, dict):
@@ -41,6 +58,7 @@ def _build_pricing(pricing_data, promo_data):
                 out["price"] = promo["discountedPrice"]
     return out if out else None
 
+
 def _build_discount_rate(discount_data):
     if not isinstance(discount_data, dict):
         return None
@@ -53,10 +71,15 @@ def _build_discount_rate(discount_data):
         out["type"] = discount_data["type"]
     return out if out else None
 
+
 def _build_installment_offer(data):
     if not _is_hepb_response_dict(data):
         return None
-    detail = data.get("data", {}).get("instalmentDetail") if isinstance(data.get("data"), dict) else None
+    detail = (
+        data.get("data", {}).get("instalmentDetail")
+        if isinstance(data.get("data"), dict)
+        else None
+    )
     if not isinstance(detail, dict):
         return None
     out = {}
@@ -69,6 +92,7 @@ def _build_installment_offer(data):
         if detail.get(key) is not None:
             out[label] = detail[key]
     return out if out else None
+
 
 def _build_ask_to_seller(data):
     if not isinstance(data, dict):
@@ -92,6 +116,7 @@ def _build_ask_to_seller(data):
         if entries:
             out["merchants"] = entries
     return out if out else None
+
 
 def _build_shipping(data):
     if not isinstance(data, list) or not data:
@@ -133,10 +158,15 @@ def _build_shipping(data):
             out["delivery_options"] = opts
     return out if out else None
 
+
 def _build_without_affordability(data):
     if not _is_hepb_response_dict(data):
         return None
-    result = data.get("data", {}).get("result") if isinstance(data.get("data"), dict) else None
+    result = (
+        data.get("data", {}).get("result")
+        if isinstance(data.get("data"), dict)
+        else None
+    )
     product = result.get("product") if isinstance(result, dict) else None
     if not isinstance(product, dict):
         return None
@@ -178,10 +208,15 @@ def _build_without_affordability(data):
                             out.setdefault("campaigns", {})[label] = entries
     return out if out else None
 
+
 def _build_payment_options(data):
     if not _is_hepb_response_dict(data):
         return None
-    result = data.get("data", {}).get("result") if isinstance(data.get("data"), dict) else None
+    result = (
+        data.get("data", {}).get("result")
+        if isinstance(data.get("data"), dict)
+        else None
+    )
     product = result.get("product") if isinstance(result, dict) else None
     if not isinstance(product, dict):
         return None
@@ -207,10 +242,15 @@ def _build_payment_options(data):
             entries.append(entry)
     return entries if entries else None
 
+
 def _build_other_merchants(data):
     if not _is_hepb_response_dict(data):
         return None
-    result = data.get("data", {}).get("result") if isinstance(data.get("data"), dict) else None
+    result = (
+        data.get("data", {}).get("result")
+        if isinstance(data.get("data"), dict)
+        else None
+    )
     products = result.get("products") if isinstance(result, dict) else None
     merchants = products.get("otherMerchants") if isinstance(products, dict) else None
     if not isinstance(merchants, list) or not merchants:
@@ -241,6 +281,7 @@ def _build_other_merchants(data):
         if entry:
             entries.append(entry)
     return entries if entries else None
+
 
 def _build_vas(data):
     if not isinstance(data, dict):

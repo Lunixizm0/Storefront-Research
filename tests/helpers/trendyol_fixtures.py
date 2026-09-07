@@ -1,4 +1,4 @@
-#Fixture loaders for Trendyol unit tests needs zero network
+# Fixture loaders for Trendyol unit tests needs zero network
 from __future__ import annotations
 
 import json

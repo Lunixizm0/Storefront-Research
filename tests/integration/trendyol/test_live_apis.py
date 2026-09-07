@@ -155,9 +155,7 @@ def test_real_complete_the_look_api(live_ids):
 
 
 def test_real_slicing_attributes_api(live_ids):
-    data = get_slicing_attributes_from_api(
-        live_ids["group_id"], live_ids["product_id"]
-    )
+    data = get_slicing_attributes_from_api(live_ids["group_id"], live_ids["product_id"])
     assert data is not None
     assert data.get("isSuccess") is True
     result = data.get("result", [])
@@ -218,7 +216,9 @@ def test_real_product_eligibility_api():
 
 
 def test_real_vas_api_post_returns_data():
-    response = get_raw_html("https://www.trendyol.com/oci/xiaomi-14t-pro-256-g-p-1081766367")
+    response = get_raw_html(
+        "https://www.trendyol.com/oci/xiaomi-14t-pro-256-g-p-1081766367"
+    )
     assert response.status_code == 200
     soup = parse_html(response.content)
     assert soup is not None
@@ -233,11 +233,14 @@ def test_real_vas_api_post_returns_data():
         product = shared_props.get("product") or {}
         attrs = product.get("attributes")
         merchant = (product.get("merchantListing") or {}).get("merchant") or {}
-        price_info = ((product.get("merchantListing") or {}).get("winnerVariant") or {}).get("price") or {}
+        price_info = (
+            (product.get("merchantListing") or {}).get("winnerVariant") or {}
+        ).get("price") or {}
         has_price = (
-            ((price_info.get("sellingPrice") or {}).get("value")) is not None
-            or ((price_info.get("discountedPrice") or {}).get("value")) is not None
-        )
+            (price_info.get("sellingPrice") or {}).get("value")
+        ) is not None or (
+            (price_info.get("discountedPrice") or {}).get("value")
+        ) is not None
         pytest.skip(
             f"VAS API returned None - missing fields: "
             f"category={product.get('category') is not None}, "

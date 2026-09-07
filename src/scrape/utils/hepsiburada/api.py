@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import json
 import re
@@ -10,7 +10,20 @@ from scrape.debug import debug
 
 from .http import _api_headers, _to_int_list, requests
 
-__all__ = ["_HepbAPIContext", "_extract_product_ctx", "_merge_product_meta", "get_ask_to_seller_from_api", "get_installment_from_api", "get_listings_from_api", "get_other_merchants_from_api", "get_payment_options_from_api", "get_shipping_due_date_from_api", "get_vas_from_api", "get_without_affordability_from_api"]
+__all__ = [
+    "_HepbAPIContext",
+    "_extract_product_ctx",
+    "_merge_product_meta",
+    "get_ask_to_seller_from_api",
+    "get_installment_from_api",
+    "get_listings_from_api",
+    "get_other_merchants_from_api",
+    "get_payment_options_from_api",
+    "get_shipping_due_date_from_api",
+    "get_vas_from_api",
+    "get_without_affordability_from_api",
+]
+
 
 def _extract_product_ctx(soup, product_data):
     ctx = {}
@@ -46,7 +59,7 @@ def _extract_product_ctx(soup, product_data):
                             if _sku:
                                 ctx["url"] = (
                                     "https://www.hepsiburada.com/"
-                                    f'{product.get("slugName")}-p-{_sku}'
+                                    f"{product.get('slugName')}-p-{_sku}"
                                 )
                         if ctx.get("product_id") is None:
                             ctx["product_id"] = product.get("productId")
@@ -92,14 +105,18 @@ def _extract_product_ctx(soup, product_data):
                                 if ids:
                                     ctx["root_category_list"] = ids
                                     ctx["root_buying_category_list"] = [ids[-1]]
-                        debug("ctx.extract.redux_ok", sku=ctx.get("sku"),
-                              definition_id=ctx.get("definition_id"),
-                              merchant_id=ctx.get("merchant_id"))
+                        debug(
+                            "ctx.extract.redux_ok",
+                            sku=ctx.get("sku"),
+                            definition_id=ctx.get("definition_id"),
+                            merchant_id=ctx.get("merchant_id"),
+                        )
 
         # backfill from raw HTML regardless of redux presence
         html = str(soup)
         try:
             import re
+
             if ctx.get("definition_id") is None:
                 md = re.search(r'"definitionId":(\d+)', html)
                 if md:
@@ -133,12 +150,20 @@ def _extract_product_ctx(soup, product_data):
     if ctx.get("sku") is None and isinstance(product_data, dict):
         ctx["sku"] = product_data.get("sku")
 
-    debug("ctx.extract.done", sku=ctx.get("sku"), definition_id=ctx.get("definition_id"),
-          merchant_id=ctx.get("merchant_id"), url=ctx.get("url"))
+    debug(
+        "ctx.extract.done",
+        sku=ctx.get("sku"),
+        definition_id=ctx.get("definition_id"),
+        merchant_id=ctx.get("merchant_id"),
+        url=ctx.get("url"),
+    )
     return ctx
 
+
 class _HepbAPIContext:
-    def __init__(self, soup=None, product_data=None, anonymous_id=None, product_url=None):
+    def __init__(
+        self, soup=None, product_data=None, anonymous_id=None, product_url=None
+    ):
         self.ctx = _extract_product_ctx(soup, product_data)
         self.soup = soup
         self.product_data = product_data or {}
@@ -147,13 +172,14 @@ class _HepbAPIContext:
             product_url
             or self.ctx.get("url")
             or (
-                f'https://www.hepsiburada.com/-p-{self.ctx["sku"]}'
+                f"https://www.hepsiburada.com/-p-{self.ctx['sku']}"
                 if self.ctx.get("sku")
                 else "https://www.hepsiburada.com"
             )
         )
         if not self.ctx.get("sku") and isinstance(product_data, dict):
             self.ctx["sku"] = product_data.get("sku")
+
 
 def get_listings_from_api(sku, product_url=None):
     debug("api.listings.start", sku=sku)
@@ -174,8 +200,13 @@ def get_listings_from_api(sku, product_url=None):
             item.pop("pbs", None)
             filtered.append(item)
         listings = filtered
-    debug("api.listings.ok", sku=sku, count=len(listings) if isinstance(listings, list) else 0)
+    debug(
+        "api.listings.ok",
+        sku=sku,
+        count=len(listings) if isinstance(listings, list) else 0,
+    )
     return listings
+
 
 def get_installment_from_api(
     sku,
@@ -208,6 +239,7 @@ def get_installment_from_api(
     debug("api.installment.ok", sku=sku)
     return resp.json()
 
+
 def _merge_product_meta(ctx, product_tags=None, **overrides):
     root_category_list = ctx.ctx.get("root_category_list") or []
     root_buying_category_list = ctx.ctx.get("root_buying_category_list") or []
@@ -234,6 +266,7 @@ def _merge_product_meta(ctx, product_tags=None, **overrides):
             if value is not None:
                 body["product"][key] = value
     return body
+
 
 def get_without_affordability_from_api(
     sku,
@@ -280,6 +313,7 @@ def get_without_affordability_from_api(
     debug("api.without_affordability.ok", sku=sku)
     return resp.json()
 
+
 def get_vas_from_api(
     sku,
     product_url=None,
@@ -299,11 +333,7 @@ def get_vas_from_api(
     definition_name = (
         ctx.ctx.get("definition_name")
         or ctx.ctx.get("name")
-        or (
-            product_data.get("name")
-            if isinstance(product_data, dict)
-            else None
-        )
+        or (product_data.get("name") if isinstance(product_data, dict) else None)
     )
     root_categories = _to_int_list(ctx.ctx.get("root_category_list"))
     price = ctx.ctx.get("price")
@@ -331,6 +361,7 @@ def get_vas_from_api(
     resp.raise_for_status()
     debug("api.vas.ok", sku=sku)
     return resp.json()
+
 
 def get_payment_options_from_api(
     sku,
@@ -374,6 +405,7 @@ def get_payment_options_from_api(
     resp.raise_for_status()
     debug("api.payment_options.ok", sku=sku)
     return resp.json()
+
 
 def get_other_merchants_from_api(
     sku,
@@ -424,6 +456,7 @@ def get_other_merchants_from_api(
     resp.raise_for_status()
     debug("api.other_merchants.ok", sku=sku)
     return resp.json()
+
 
 def get_shipping_due_date_from_api(
     ctx,
@@ -478,6 +511,7 @@ def get_shipping_due_date_from_api(
     resp.raise_for_status()
     debug("api.shipping_due_date.ok", sku=sku)
     return resp.json()
+
 
 def get_ask_to_seller_from_api(sku, product_url=None):
     debug("api.ask_to_seller.start", sku=sku)

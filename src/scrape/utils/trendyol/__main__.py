@@ -3,6 +3,7 @@ if __name__ == "__main__":
 
     from scrape.dataset import ProductDataset
     from scrape.utils import trendyol
+
     url = "https://www.trendyol.com/xiaomi/redmi-buds-8-pro-siyah-bluetooth-kulakici-kulaklik-tws-anc-bt-5-4-xiaomi-tr-garantili-p-1081766367"
     dataset = trendyol.extract_product_dataset(url)
     if isinstance(dataset, ProductDataset):

@@ -1,4 +1,4 @@
-#Integration conftest parametrized live URLs, session-scoped fixtures things
+# Integration conftest parametrized live URLs, session-scoped fixtures things
 from __future__ import annotations
 
 import sys

@@ -18,7 +18,6 @@ from scrape.utils.trendyol import extract_product_dataset, get_raw_html, parse_h
 
 
 class _Tee:
-
     def __init__(self, terminal, file):
         self.terminal = terminal
         self.file = file
@@ -57,8 +56,16 @@ def scrape_trendyol(url: str) -> dict:
     if dataset is None:
         raise RuntimeError(f"Trendyol product data not found: {url}")
 
-    payload = dataset.to_dict() if isinstance(dataset, ProductDataset) else json.loads(json.dumps(dataset, ensure_ascii=False))
-    info("scrape.complete", provider="trendyol", populated_fields=sum(value is not None for value in payload.values()))
+    payload = (
+        dataset.to_dict()
+        if isinstance(dataset, ProductDataset)
+        else json.loads(json.dumps(dataset, ensure_ascii=False))
+    )
+    info(
+        "scrape.complete",
+        provider="trendyol",
+        populated_fields=sum(value is not None for value in payload.values()),
+    )
     return payload
 
 
@@ -74,8 +81,16 @@ def scrape_hepsiburada(url: str) -> dict:
     if dataset is None:
         raise RuntimeError(f"Hepsiburada product data not found: {url}")
 
-    payload = dataset.to_dict() if isinstance(dataset, ProductDataset) else json.loads(json.dumps(dataset, ensure_ascii=False))
-    info("scrape.complete", provider="hepsiburada", populated_fields=sum(value is not None for value in payload.values()))
+    payload = (
+        dataset.to_dict()
+        if isinstance(dataset, ProductDataset)
+        else json.loads(json.dumps(dataset, ensure_ascii=False))
+    )
+    info(
+        "scrape.complete",
+        provider="hepsiburada",
+        populated_fields=sum(value is not None for value in payload.values()),
+    )
     return payload
 
 
@@ -92,7 +107,9 @@ def _dispatch(url: str) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="URL-based product scraper CLI")
     parser.add_argument("url", help="Product URL to scrape")
-    parser.add_argument("--debug", action="store_true", help="Show scraper diagnostics on stderr")
+    parser.add_argument(
+        "--debug", action="store_true", help="Show scraper diagnostics on stderr"
+    )
     parser.add_argument(
         "--http-body",
         action="store_true",
@@ -104,7 +121,9 @@ def main() -> None:
         type=Path,
         help="Also write everything shown in the terminal to this log file",
     )
-    parser.add_argument("--no-output", action="store_true", help="Do not print the final JSON result")
+    parser.add_argument(
+        "--no-output", action="store_true", help="Do not print the final JSON result"
+    )
     args = parser.parse_args()
     if args.http_body and not args.debug:
         parser.error("--http-body requires --debug")
@@ -126,14 +145,21 @@ def main() -> None:
 
         try:
             if args.no_output:
-                with open(os.devnull, "w", encoding="utf-8") as null_output, redirect_stdout(null_output):
+                with (
+                    open(os.devnull, "w", encoding="utf-8") as null_output,
+                    redirect_stdout(null_output),
+                ):
                     payload = _dispatch(args.url)
             else:
                 payload = _dispatch(args.url)
             output = json.dumps(payload, ensure_ascii=False, indent=2)
             if args.out:
                 args.out.write_text(f"{output}\n", encoding="utf-8")
-                info("output.file_written", path=str(args.out), bytes=len(output.encode("utf-8")))
+                info(
+                    "output.file_written",
+                    path=str(args.out),
+                    bytes=len(output.encode("utf-8")),
+                )
             if not args.no_output:
                 print(output)
             info(

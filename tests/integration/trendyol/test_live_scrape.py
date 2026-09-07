@@ -34,7 +34,9 @@ def test_extracts_price_from_live_trendyol_product(trendyol_url):
         f"Unexpected price format for {trendyol_url}: {price}"
     )
 
-    assert extract_price(soup) == price, f"DOM and JSON price mismatch for {trendyol_url}"
+    assert extract_price(soup) == price, (
+        f"DOM and JSON price mismatch for {trendyol_url}"
+    )
 
     dataset = extract_product_dataset(soup)
     assert dataset is not None

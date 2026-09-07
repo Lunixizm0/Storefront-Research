@@ -1,10 +1,11 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 import requests as _requests
 
 from scrape.debug import DebugRequests, request_get
 
 __all__ = ["get_common_api_headers", "get_raw_html", "requests"]
+
 
 def get_raw_html(url):
     headers = {
@@ -22,6 +23,7 @@ def get_raw_html(url):
     response = request_get(_requests, url, headers=headers, timeout=20)
     return response
 
+
 def get_common_api_headers():
     return {
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:154.0) Gecko/20100101 Firefox/154.0",
@@ -32,5 +34,6 @@ def get_common_api_headers():
         "Origin": "https://www.trendyol.com",
         "Cookie": "platform=web; AZ_SELECTED=false; storefrontId=1; countryCode=TR; language=tr",
     }
+
 
 requests = DebugRequests(_requests)

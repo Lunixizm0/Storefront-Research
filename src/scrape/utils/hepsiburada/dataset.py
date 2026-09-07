@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 from scrape.dataset import ProductDataset
 from scrape.debug import debug, warn
@@ -40,6 +40,7 @@ from .parsing import (
 
 __all__ = ["build_product_dataset", "extract_product_dataset"]
 
+
 def build_product_dataset(
     product_data, category="unknown", custom_data=None, soup=None
 ):
@@ -49,7 +50,11 @@ def build_product_dataset(
 
     redux = _extract_redux_store(soup) if soup is not None else None
     redux_product = _extract_redux_product(redux)
-    debug("dataset.build.start", provider="hepsiburada", redux_product_found=redux_product is not None)
+    debug(
+        "dataset.build.start",
+        provider="hepsiburada",
+        redux_product_found=redux_product is not None,
+    )
 
     offers = product_data.get("offers")
     if not isinstance(offers, dict):
@@ -112,9 +117,7 @@ def build_product_dataset(
                     payment_tag = first_listing.get("paymentTag")
                     if isinstance(payment_tag, str) and payment_tag:
                         product_tags = [
-                            t.strip()
-                            for t in payment_tag.split(",")
-                            if t.strip()
+                            t.strip() for t in payment_tag.split(",") if t.strip()
                         ]
                     if not product_tags:
                         tag_list = first_listing.get("tagList")
@@ -150,7 +153,9 @@ def build_product_dataset(
     if built_installment:
         api_data["installment"] = built_installment
 
-    ask_to_seller = _safe_api_call(get_ask_to_seller_from_api, sku, product_url=product_url)
+    ask_to_seller = _safe_api_call(
+        get_ask_to_seller_from_api, sku, product_url=product_url
+    )
     built_ask = _build_ask_to_seller(ask_to_seller)
     if built_ask:
         api_data["ask_to_seller"] = built_ask
@@ -261,9 +266,14 @@ def build_product_dataset(
     )
     return dataset
 
+
 def extract_product_dataset(soup, category="unknown", custom_data=None):
     product_data = extract_product_data(soup)
-    debug("dataset.extract", provider="hepsiburada", product_data_found=product_data is not None)
+    debug(
+        "dataset.extract",
+        provider="hepsiburada",
+        product_data_found=product_data is not None,
+    )
     return build_product_dataset(
         product_data, category=category, custom_data=custom_data, soup=soup
     )

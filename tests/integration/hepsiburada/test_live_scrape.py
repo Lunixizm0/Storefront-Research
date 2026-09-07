@@ -30,7 +30,9 @@ def test_extracts_product_from_live_hepsiburada_product(hepsiburada_url):
     assert dataset is not None
 
     assert dataset.source == "hepsiburada"
-    assert dataset.name is not None and len(dataset.name) > 0, f"No name on {hepsiburada_url}"
+    assert dataset.name is not None and len(dataset.name) > 0, (
+        f"No name on {hepsiburada_url}"
+    )
     assert dataset.brand is not None, f"No brand on {hepsiburada_url}"
     assert dataset.sku is not None, f"No sku on {hepsiburada_url}"
     assert dataset.price is not None, f"No price on {hepsiburada_url}"
@@ -40,14 +42,18 @@ def test_extracts_product_from_live_hepsiburada_product(hepsiburada_url):
     assert dataset.currency == "TRY", (
         f"Unexpected currency on {hepsiburada_url}: {dataset.currency}"
     )
-    assert dataset.category not in (None, "unknown"), f"No category on {hepsiburada_url}"
+    assert dataset.category not in (None, "unknown"), (
+        f"No category on {hepsiburada_url}"
+    )
     assert dataset.availability is not None, f"No availability on {hepsiburada_url}"
 
     assert dataset.description is not None and len(dataset.description) > 10, (
         f"Description too short on {hepsiburada_url}"
     )
 
-    assert "merchant" in dataset.custom_data, f"No merchant in custom_data on {hepsiburada_url}"
+    assert "merchant" in dataset.custom_data, (
+        f"No merchant in custom_data on {hepsiburada_url}"
+    )
 
     json.loads(product_dataset_to_json(dataset))
 
@@ -61,7 +67,9 @@ def test_live_hepsiburada_product_has_reviews_and_listings(hepsiburada_url):
     soup = parse_html(response.content)
     dataset = extract_product_dataset(soup)
 
-    assert dataset.custom_data.get("reviews") is not None, f"No reviews on {hepsiburada_url}"
+    assert dataset.custom_data.get("reviews") is not None, (
+        f"No reviews on {hepsiburada_url}"
+    )
 
     listings = dataset.custom_data.get("listings")
     assert listings is None or (isinstance(listings, list) and len(listings) > 0), (

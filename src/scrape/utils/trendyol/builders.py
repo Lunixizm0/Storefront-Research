@@ -1,4 +1,4 @@
-#In-tree package module. Do not use directly. import from scrape.utils.{pkg}
+# In-tree package module. Do not use directly. import from scrape.utils.{pkg}
 
 from scrape.debug import debug, warn
 
@@ -17,7 +17,25 @@ from .shared_props import (
     _sp_video_id,
 )
 
-__all__ = ["_build_complete_the_look", "_build_currencies", "_build_delivery", "_build_installments", "_build_merchant_questions", "_build_product_eligibility", "_build_reviews", "_build_seller_acceptance", "_build_seller_follower", "_build_seller_store", "_build_slicing_attributes", "_build_social_proof", "_build_stamps", "_build_stickers", "_build_vas", "_build_video"]
+__all__ = [
+    "_build_complete_the_look",
+    "_build_currencies",
+    "_build_delivery",
+    "_build_installments",
+    "_build_merchant_questions",
+    "_build_product_eligibility",
+    "_build_reviews",
+    "_build_seller_acceptance",
+    "_build_seller_follower",
+    "_build_seller_store",
+    "_build_slicing_attributes",
+    "_build_social_proof",
+    "_build_stamps",
+    "_build_stickers",
+    "_build_vas",
+    "_build_video",
+]
+
 
 def _build_reviews(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
@@ -31,7 +49,7 @@ def _build_reviews(product_data, shared_props):
         return None
     summary = result.get("summary") if isinstance(result.get("summary"), dict) else {}
     reviews = []
-    for r in (result.get("reviews") or []):
+    for r in result.get("reviews") or []:
         if not isinstance(r, dict):
             continue
         entry = {}
@@ -58,9 +76,12 @@ def _build_reviews(product_data, shared_props):
         out["reviews"] = reviews[:5]
     return out if out else None
 
+
 def _build_vas(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
-    data = _safe_api_call(api.get_vas_from_api, product_id=pid, shared_props=shared_props)
+    data = _safe_api_call(
+        api.get_vas_from_api, product_id=pid, shared_props=shared_props
+    )
     if not isinstance(data, dict) or not data.get("isSuccess"):
         debug(
             "api.builder.skip",
@@ -82,8 +103,7 @@ def _build_vas(product_data, shared_props):
             "name": offer.get("subCategory")
             or offer.get("category")
             or offer.get("variant", {}).get("name"),
-            "price": offer.get("calculatedPrice")
-            or offer.get("calculatedPriceText"),
+            "price": offer.get("calculatedPrice") or offer.get("calculatedPriceText"),
             "user_friendly_price": offer.get("calculatedPriceTextWithCurrency"),
             "currency": offer.get("currency"),
             "category": offer.get("category"),
@@ -98,6 +118,7 @@ def _build_vas(product_data, shared_props):
         warn("api.builder.skip", builder="_build_vas", reason="no_usable_offers")
         return None
     return offers
+
 
 def _build_installments(product_data, shared_props):
     amount = _sp_selling_price(shared_props)
@@ -129,12 +150,12 @@ def _build_installments(product_data, shared_props):
                 "monthly_fee": max_inst.get("monthlyFee"),
             }
     offers = []
-    for offer in (result.get("installmentOffers") or []):
+    for offer in result.get("installmentOffers") or []:
         if not isinstance(offer, dict):
             continue
         issuer = offer.get("issuerName") or offer.get("displayName")
         plans = []
-        for inst in (offer.get("installements") or []):
+        for inst in offer.get("installements") or []:
             if not isinstance(inst, dict):
                 continue
             plans.append(
@@ -151,6 +172,7 @@ def _build_installments(product_data, shared_props):
     if offers:
         out["offers"] = offers
     return out if out else None
+
 
 def _build_delivery(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
@@ -181,6 +203,7 @@ def _build_delivery(product_data, shared_props):
         out["fast_delivery_options"] = fast
     return out if out else None
 
+
 def _build_merchant_questions(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
     if pid is None:
@@ -190,14 +213,18 @@ def _build_merchant_questions(product_data, shared_props):
         return None
     questions = data.get("questions")
     if not isinstance(questions, dict):
-        questions = data.get("result", {}).get("questions") if isinstance(data.get("result"), dict) else None
+        questions = (
+            data.get("result", {}).get("questions")
+            if isinstance(data.get("result"), dict)
+            else None
+        )
     if not isinstance(questions, dict):
         return None
     out = {}
     if questions.get("totalElements") is not None:
         out["total"] = questions["totalElements"]
     entries = []
-    for q in (questions.get("content") or []):
+    for q in questions.get("content") or []:
         if not isinstance(q, dict):
             continue
         entry = {"question": q.get("text")}
@@ -215,6 +242,7 @@ def _build_merchant_questions(product_data, shared_props):
     if entries:
         out["questions"] = entries[:4]
     return out if out else None
+
 
 def _build_seller_store(product_data, shared_props):
     seller_id = _sp_seller_id(shared_props)
@@ -238,7 +266,7 @@ def _build_seller_store(product_data, shared_props):
     if isinstance(ranking, dict) and ranking.get("text"):
         out["ranking"] = ranking["text"]
     metrics = []
-    for m in (result.get("sellerMetrics") or []):
+    for m in result.get("sellerMetrics") or []:
         if isinstance(m, dict) and m.get("title") is not None:
             metrics.append(
                 {"title": m.get("title"), "value": m.get("value"), "id": m.get("id")}
@@ -246,6 +274,7 @@ def _build_seller_store(product_data, shared_props):
     if metrics:
         out["metrics"] = metrics
     return out if out else None
+
 
 def _build_seller_follower(product_data, shared_props):
     seller_id = _sp_seller_id(shared_props)
@@ -266,6 +295,7 @@ def _build_seller_follower(product_data, shared_props):
         out["has_coupon"] = result["hasCoupon"]
     return out if out else None
 
+
 def _build_seller_acceptance(product_data, shared_props):
     seller_id = _sp_seller_id(shared_props)
     if seller_id is None:
@@ -277,14 +307,13 @@ def _build_seller_acceptance(product_data, shared_props):
         return {"accepts_questions": data["isSellerAcceptQuestions"]}
     return None
 
+
 def _build_product_eligibility(product_data, shared_props):
     category_id = _sp_category_id(shared_props)
     price = _sp_selling_price(shared_props)
     if category_id is None or price is None:
         return None
-    data = _safe_api_call(
-        api.get_product_eligibility_from_api, category_id, 13, price
-    )
+    data = _safe_api_call(api.get_product_eligibility_from_api, category_id, 13, price)
     if not isinstance(data, dict):
         return None
     result = data.get("result")
@@ -307,6 +336,7 @@ def _build_product_eligibility(product_data, shared_props):
             out["banners"] = clean
     return out if out else None
 
+
 def _build_slicing_attributes(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
     group_id = _sp_p_group_id(shared_props)
@@ -323,7 +353,7 @@ def _build_slicing_attributes(product_data, shared_props):
         if not isinstance(attr, dict):
             continue
         values = []
-        for v in (attr.get("values") or []):
+        for v in attr.get("values") or []:
             if not isinstance(v, dict):
                 continue
             values.append(
@@ -337,8 +367,11 @@ def _build_slicing_attributes(product_data, shared_props):
             )
         values = [x for x in values if x.get("name")]
         if attr.get("title") and values:
-            attrs.append({"title": attr["title"], "type": attr.get("type"), "values": values})
+            attrs.append(
+                {"title": attr["title"], "type": attr.get("type"), "values": values}
+            )
     return attrs if attrs else None
+
 
 def _build_complete_the_look(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
@@ -354,6 +387,7 @@ def _build_complete_the_look(product_data, shared_props):
         return result
     return None
 
+
 def _build_social_proof(product_data, shared_props):
     pid = _sp_product_id(product_data, shared_props)
     if pid is None:
@@ -365,10 +399,11 @@ def _build_social_proof(product_data, shared_props):
     for val in data.values():
         if not isinstance(val, dict):
             continue
-        for proof in (val.get("socialProofs") or []):
+        for proof in val.get("socialProofs") or []:
             if isinstance(proof, dict) and proof.get("id"):
                 out[proof["id"]] = proof.get("count")
     return out if out else None
+
 
 def _build_video(product_data, shared_props):
     video_id = _sp_video_id(shared_props)
@@ -390,10 +425,13 @@ def _build_video(product_data, shared_props):
     out = {k: v for k, v in out.items() if v is not None}
     return out if out else None
 
+
 def _build_stickers(product_data, shared_props):
     sticker_ids = _sp_sticker_ids(shared_props)
     if sticker_ids is None:
-        warn("api.builder.skip", builder="_build_stickers", reason="sticker_ids_missing")
+        warn(
+            "api.builder.skip", builder="_build_stickers", reason="sticker_ids_missing"
+        )
         return None
     if isinstance(sticker_ids, (list, tuple)):
         sticker_ids = ",".join(str(x) for x in sticker_ids)
@@ -415,6 +453,7 @@ def _build_stickers(product_data, shared_props):
             )
     return stickers if stickers else None
 
+
 def _build_stamps(product_data, shared_props):
     tag_ids = _sp_tag_ids(shared_props)
     if tag_ids is None:
@@ -423,18 +462,24 @@ def _build_stamps(product_data, shared_props):
         tag_ids = ",".join(str(x) for x in tag_ids)
     data = _safe_api_call(api.get_stamps_from_api, tag_ids)
     if not isinstance(data, dict):
-        warn("api.builder.skip", builder="_build_stamps", reason="response_not_an_object")
+        warn(
+            "api.builder.skip", builder="_build_stamps", reason="response_not_an_object"
+        )
         return None
     result = data.get("result")
     if not isinstance(result, dict) or not result:
-        warn("api.builder.skip", builder="_build_stamps", reason="result_empty_or_not_an_object")
+        warn(
+            "api.builder.skip",
+            builder="_build_stamps",
+            reason="result_empty_or_not_an_object",
+        )
         return None
     stamps = []
     for stamp_info in result.values():
         if not isinstance(stamp_info, dict):
             continue
         display = stamp_info.get("displayName") or stamp_info.get("name")
-        for stamp in (stamp_info.get("stamps") or []):
+        for stamp in stamp_info.get("stamps") or []:
             if isinstance(stamp, dict) and stamp.get("stampUrl"):
                 stamps.append(
                     {
@@ -445,9 +490,14 @@ def _build_stamps(product_data, shared_props):
                     }
                 )
     if not stamps:
-        warn("api.builder.skip", builder="_build_stamps", reason="no_stamp_url_in_response")
+        warn(
+            "api.builder.skip",
+            builder="_build_stamps",
+            reason="no_stamp_url_in_response",
+        )
         return None
     return stamps
+
 
 def _build_currencies(product_data, shared_props):
     data = _safe_api_call(api.get_currencies_from_api)
@@ -459,7 +509,5 @@ def _build_currencies(product_data, shared_props):
     currencies = []
     for c in result:
         if isinstance(c, dict) and c.get("currencyName"):
-            currencies.append(
-                {"name": c["currencyName"], "rate": c.get("tcmbRate")}
-            )
+            currencies.append({"name": c["currencyName"], "rate": c.get("tcmbRate")})
     return currencies if currencies else None

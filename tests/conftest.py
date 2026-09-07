@@ -9,13 +9,15 @@ FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 
 
 def pytest_configure(config):
-    config.addinivalue_line("markers", "integration: tests that hit live APIs and require network")
+    config.addinivalue_line(
+        "markers", "integration: tests that hit live APIs and require network"
+    )
 
 
 def load_fixture(*parts: str, as_json: bool = True):
 
-    #load_fixture("trendyol", "product_page.html", as_json=False) returns str
-    #load_fixture("trendyol", "api", "reviews.json")  returns dict
+    # load_fixture("trendyol", "product_page.html", as_json=False) returns str
+    # load_fixture("trendyol", "api", "reviews.json")  returns dict
     path = FIXTURES_DIR.joinpath(*parts)
     if not path.exists():
         raise FileNotFoundError(f"Fixture not found: {path}")
@@ -25,7 +27,7 @@ def load_fixture(*parts: str, as_json: bool = True):
 
 
 def load_fixture_bytes(*parts: str) -> bytes:
-    #Load a file from tests/fixtures/ as raw bytes
+    # Load a file from tests/fixtures/ as raw bytes
     path = FIXTURES_DIR.joinpath(*parts)
     if not path.exists():
         raise FileNotFoundError(f"Fixture not found: {path}")
