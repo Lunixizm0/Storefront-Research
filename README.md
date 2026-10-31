@@ -20,6 +20,31 @@ Anyone can crawl a page and read it. My question here is how the page was built 
 - **Description building**: fallback (API > cleaned JSON-LD / embedded state > attribute synthesis)
 - **Turkish boilerplate filtering**: 35 common phrases filtered from descriptions
 
+## Discovered Storefront APIs
+
+API documentation lives in `docs/wiki/` as flattened, prefixed Markdown pages and is published to the GitHub Wiki automatically on push (see `.github/workflows/publish-wiki.yml`). `docs/wiki/Home.md` links everything together.
+
+**Trendyol** (`docs/wiki/trendyol-*.md`) documents 18 internal endpoints discovered via browser network inspection:
+
+- review-read, component-read, delivery-date, installment, merchant-questions, seller-acceptance, currencies, stickers, video-content, complete-the-look
+- slicing-attributes, social-proof, seller-store, sellerstore-follow, stamps, product-eligibility, coc-webview credit endpoint
+
+See `docs/wiki/trendyol-README.md` for the full endpoint list, headers, and accessibility matrix.
+
+**Hepsiburada** (`docs/wiki/hepsiburada-*.md`) documents the PDP storefront APIs and JSON-LD structured data:
+
+- product listings, withoutAffordability (discounted price + campaign), installment, other merchants, payment options, shipping due date, ask-to-seller, VAS
+
+See `docs/wiki/hepsiburada-README.md` for details. For Hepsiburada, Akamai `_abck` protection can be completely bypass, server doesnt check it.
+
+**MediaMarkt Türkiye** (`docs/wiki/mediamarkt-*.md`) is documented differently: the PDP exposes **no JSON-LD** - the core product aggregate (name, brand, price, image, description, features, category, availability, reviews, installments, VA services) lives entirely in the SSR-embedded Apollo cache `window.__PRELOADED_STATE__` - `apolloState`. On top of that, two GraphQL persisted queries (`GET https://www.mediamarkt.com.tr/api/v1/graphql`) return media content and loyalty points. The GraphQL endpoint is served to plain `requests`: a GET with the persisted-query hash, the `pwa` extensions block and the apollo/`x-mms-*`/gateway headers (plus `Content-Type` and `Origin` for the CSRF check) returns `200` - no `curl_cffi` impersonation or browser cookies needed, though the client keeps a best-effort cookie warm-up/retry fallback. Documentation:
+
+- `mediamarkt-README.md` - overview, base URL, common headers, endpoint index
+- `mediamarkt-preloaded_state.md` - Apollo cache extraction and schema
+- `mediamarkt-graphql.md` - persisted queries, `extensions` blocks, accessibility notes
+
+Example raw output lives at `docs/mediamarkt-example.json`.
+
 ## Quick Start
 
 ```bash
@@ -54,143 +79,6 @@ uv run scrape --debug --out-std scrape.log "https://www.trendyol.com/brand/produ
 `--debug` writes network requests, HTTP statuses, HTML/JSON-LD parsing, dataset building, and API enrichments to stderr. The normal JSON result stays on stdout, so it remains compatible with output redirection. `--no-output` hides only the final JSON result.
 
 `--out FILE` writes the final dataset JSON to both a file and stdout. `--out-std FILE` additionally writes everything that reaches the terminal (stdout, debug, and HTTP body) to a log file. `--no-output` hides the final JSON from stdout; if `--out` is given the JSON is still written to the file. If no output option is given, the result is written to stdout, consistent with prior behavior.
-
-### See `docs/trendyol-example.json`, `docs/hepsiburada-example.json` and `docs/mediamarkt-example.json` for example output.
-
-## Project Structure
-
-```
-src/scrape/
-├── __init__.py          # CLI entry point (scrape command)
-├── main.py              # URL detection, argparse CLI, dispatch logic
-├── dataset.py           # ProductDataset dataclass
-├── debug.py             # Leveled, colorized debug logging
-└── utils/
-    ├── trendyol/        # Trendyol scraper (modular)
-    │   ├── __init__.py  # Public exports
-    │   ├── __main__.py  # Module CLI for debugging
-    │   ├── api.py       # Internal API client (18+ endpoints)
-    │   ├── builders.py  # VAS, reviews, listing entry builders
-    │   ├── common.py    # Shared constants, URL patterns
-    │   ├── dataset.py   # Trendyol-specific dataset builders
-    │   ├── http.py      # HTTP session, headers, cookies
-    │   ├── parsing.py   # HTML/JSON-LD parsing
-    │   └── shared_props.py # __envoy__SHARED_PROPS extraction
-    ├── hepsiburada/     # Hepsiburada scraper (modular)
-    │    ├── __init__.py  # Public exports
-    │    ├── __main__.py  # Module CLI for debugging
-    │    ├── api.py       # PDP storefront API client
-    │    ├── builders.py  # VAS, description, generic builders
-    │    ├── dataset.py   # Hepsiburada-specific dataset builders
-    │    ├── http.py      # HTTP session, Akamai handling
-    │    ├── parsing.py   # HTML/JSON-LD parsing
-    │    └── redux.py     # reduxStore extraction (in __init__)
-    └── mediamarkt/     # MediaMarkt scraper (modular)
-        ├── __init__.py  # Public exports
-        ├── __main__.py  # Module CLI for debugging
-        ├── builders.py  # Category, price, VAS, custom_data builders
-        ├── dataset.py   # MediaMarkt-specific dataset builder
-        ├── graphql.py   # Persisted-query GraphQL client (media + loyalty)
-        ├── http.py      # HTTP session, Cloudflare cookie warm-up
-        └── parsing.py   # HTML / __PRELOADED_STATE__ / apolloState parsing
-tests/
-├── conftest.py              # Root conftest: markers, fixture helpers
-├── helpers/
-│   ├── __init__.py
-│   ├── _live_helpers.py     # Live URL fetchers for integration parametrization
-│   ├── trendyol_fixtures.py # Cached fixture loaders for Trendyol tests
-│   ├── hepsiburada_fixtures.py # Cached fixture loaders for Hepsiburada tests
-│   └── mediamarkt_fixtures.py  # Cached fixture loaders for MediaMarkt tests
-├── fixtures/
-│   ├── __init__.py
-│   ├── capture_fixtures.py  # One-time script to capture live fixture data
-│   ├── trendyol/            # HTML, API responses, expected outputs
-│   │   ├── api/             # 18+ captured API responses
-│   │   └── expected/        # Expected parsed outputs
-│   ├── hepsiburada/         # HTML, redux store, API responses, expected outputs
-│   │    ├── api/             # Captured API responses
-│   │    └── expected/        # Expected parsed outputs
-│   └── mediamarkt/          # HTML, Apollo state, GraphQL responses, expected outputs
-├── unit/
-│   ├── __init__.py
-│   ├── trendyol/
-│   │   ├── __init__.py
-│   │   ├── test_parsing.py      # HTML parsing, product data, price extraction
-│   │   ├── test_shared_props.py # Shared props, category path, custom data
-│   │   ├── test_builders.py     # VAS flattening, reviews, listing entry
-│   │   ├── test_dataset.py      # ProductDataset JSON serialization
-│   │   └── test_helpers.py      # Helper functions (monkeypatched)
-│   ├── hepsiburada/
-│   │   ├── __init__.py
-│   │   ├── test_parsing.py      # HTML parsing, product data, price
-│   │   ├── test_redux.py        # Redux store extraction
-│   │   ├── test_builders.py     # VAS building, description, generic check
-│   │   └── test_product_ctx.py  # Product context, category, availability
-│   ├── mediamarkt/
-│   │   ├── __init__.py
-│   │   ├── conftest.py          # Sets SCRAPE_MEDIAMARKT_GRAPHQL=0 for hermetic tests
-│   │   ├── test_parsing.py      # apolloState parsing, availability, breadcrumbs
-│   │   └── test_dataset.py      # Full dataset build from cached fixtures
-│   ├── test_cli_debug.py        # CLI debug/stdout/stderr behavior
-│   └── test_installments.py     # Trendyol installment plan field names
-└── integration/
-    ├── __init__.py
-    ├── conftest.py              # Parametrized live URLs + session fixtures
-    ├── trendyol/
-    │   ├── __init__.py
-    │   ├── test_live_scrape.py  # Parametrized live scrape tests
-    │   └── test_live_apis.py    # 18 live Trendyol API tests
-    ├── hepsiburada/
-        ├── __init__.py
-        └── test_live_scrape.py  # Parametrized live scrape tests
-    └── mediamarkt/
-        ├── __init__.py
-        └── test_live_scrape.py  # Parametrized live scrape tests (Cloudflare)
-docs/
-├── wiki/                       # GitHub Wiki content (auto-published via CI)
-│   ├── Home.md                      # Wiki landing page
-│   ├── trendyol-README.md           # Trendyol API documentation index
-│   ├── trendyol-component_data.md   # Component-read endpoint
-│   ├── trendyol-kredi_teklifleri.md # Credit/installment endpoint (external)
-│   ├── trendyol-review_read.md      # Reviews + AI summary
-│   ├── trendyol-delivery_date.md    # Delivery dates
-│   ├── trendyol-installment.md      # Bank installment options
-│   ├── trendyol-merchant_questions.md   # Q&A
-│   ├── trendyol-seller_acceptance.md    # Seller question acceptance
-│   ├── trendyol-slicing_attributes.md   # Variants/colors
-│   ├── trendyol-seller_store.md         # Seller store info
-│   ├── trendyol-sellerstore_follow.md   # Follower count
-│   ├── trendyol-social_proof.md         # Favorites
-│   ├── trendyol-video_content.md        # Product videos
-│   ├── trendyol-stamps.md               # Badges/stamps
-│   ├── trendyol-stickers.md             # Stickers
-│   ├── trendyol-currencies.md           # Exchange rates
-│   ├── trendyol-product_eligibility.md  # Eligibility
-│   ├── trendyol-vas.md                  # Value-added services
-│   ├── trendyol-complete_the_look.md    # CTL markers
-│   ├── trendyol-description.md          # Product description
-│   ├── trendyol-jsonld.md               # JSON-LD structured data
-│   ├── trendyol-shared_props.md         # Embedded SHARED_PROPS state
-│   ├── hepsiburada-README.md            # Hepsiburada API documentation index
-│   ├── hepsiburada-product_listings.md  # Seller listings
-│   ├── hepsiburada-without_affordability.md  # Discounted price + campaign
-│   ├── hepsiburada-installment.md       # Installment / credit options
-│   ├── hepsiburada-other_merchants.md   # Other sellers
-│   ├── hepsiburada-payment_options.md   # Payment options
-│   ├── hepsiburada-shipping_due_date.md # Shipping delivery date
-│   ├── hepsiburada-ask_to_seller.md     # Seller question status
-│   ├── hepsiburada-vas.md               # Value-added services
-│   ├── hepsiburada-jsonld.md            # HTML-embedded structured data
-│   ├── hepsiburada-description.md       # Product description (DOM)
-│   ├── hepsiburada-redux_store.md       # Embedded reduxStore state
-│   ├── mediamarkt-README.md             # MediaMarkt documentation index
-│   ├── mediamarkt-preloaded_state.md    # __PRELOADED_STATE__ / Apollo cache
-│   ├── mediamarkt-graphql.md            # GraphQL persisted queries (media + loyalty)
-│   └── dataset-schema.md                # Product dataset output schema
-├── trendyol-example.json           # Example raw Trendyol output
-├── hepsiburada-example.json        # Example raw Hepsiburada output
-└── mediamarkt-example.json         # Example raw MediaMarkt output
-```
 
 ## Requirements
 
@@ -246,28 +134,3 @@ uv run ruff check src/ tests/    # Linting
 uv run ruff format src/ tests/   # Formatting
 uv run pyright src/ tests/       # Type checking
 ```
-
-## Discovered Storefront APIs
-
-API documentation lives in `docs/wiki/` as flattened, prefixed Markdown pages and is published to the GitHub Wiki automatically on push (see `.github/workflows/publish-wiki.yml`). `docs/wiki/Home.md` links everything together.
-
-**Trendyol** (`docs/wiki/trendyol-*.md`) documents 18 internal endpoints discovered via browser network inspection:
-
-- review-read, component-read, delivery-date, installment, merchant-questions, seller-acceptance, currencies, stickers, video-content, complete-the-look
-- slicing-attributes, social-proof, seller-store, sellerstore-follow, stamps, product-eligibility, coc-webview credit endpoint
-
-See `docs/wiki/trendyol-README.md` for the full endpoint list, headers, and accessibility matrix.
-
-**Hepsiburada** (`docs/wiki/hepsiburada-*.md`) documents the PDP storefront APIs and JSON-LD structured data:
-
-- product listings, withoutAffordability (discounted price + campaign), installment, other merchants, payment options, shipping due date, ask-to-seller, VAS
-
-See `docs/wiki/hepsiburada-README.md` for details. For Hepsiburada, Akamai `_abck` protection can be completely bypass, server doesnt check it.
-
-**MediaMarkt Türkiye** (`docs/wiki/mediamarkt-*.md`) is documented differently: the PDP exposes **no JSON-LD** - the core product aggregate (name, brand, price, image, description, features, category, availability, reviews, installments, VA services) lives entirely in the SSR-embedded Apollo cache `window.__PRELOADED_STATE__` - `apolloState`. On top of that, two GraphQL persisted queries (`GET https://www.mediamarkt.com.tr/api/v1/graphql`) return media content and loyalty points. The GraphQL endpoint is served to plain `requests`: a GET with the persisted-query hash, the `pwa` extensions block and the apollo/`x-mms-*`/gateway headers (plus `Content-Type` and `Origin` for the CSRF check) returns `200` - no `curl_cffi` impersonation or browser cookies needed, though the client keeps a best-effort cookie warm-up/retry fallback. Documentation:
-
-- `mediamarkt-README.md` - overview, base URL, common headers, endpoint index
-- `mediamarkt-preloaded_state.md` - Apollo cache extraction and schema
-- `mediamarkt-graphql.md` - persisted queries, `extensions` blocks, accessibility notes
-
-Example raw output lives at `docs/mediamarkt-example.json`.
