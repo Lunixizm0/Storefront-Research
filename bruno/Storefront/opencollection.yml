@@ -1,0 +1,31 @@
+opencollection: 1.0.0
+
+info:
+  name: Storefront
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  headers:
+    - name: User-Agent
+      value: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:152.0) Gecko/20100101 Firefox/152.0
+    - name: Accept-Language
+      value: tr-TR,tr;q=0.9,en-US;q=0.8
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git
+    presets:
+      request:
+        type: http

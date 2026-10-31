@@ -44,6 +44,20 @@ Returns a JSON object with a `monthlyPayments` array. Each element represents a 
 
     - `highlight` - Whether this plan is highlighted/recommended.
 
+## Notes
+
+Server returns HTTP 500 when i delete 'price' or 'maxTerm' parameters. No issues when i tried to delete 'bankCategoryId'
+Might be lead to something.
+
+**HTTP 500 Response**
+
+``` json
+{
+  "source": "CONSUMERLENDING_BFF",
+  "title": "UNKNOWN",
+  "message": "We are currently unable to complete your request."
+}
+```
 ## Example
 
 **Request:**

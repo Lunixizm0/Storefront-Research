@@ -12,9 +12,10 @@ GET https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/stam
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `tagIds` | string | Yes | URL-encoded, comma-separated tag ids (e.g. `4905%2C8581%2C9637`). |
+| `tagIds` | string | Yes | URL-encoded, comma-separated tag ids (e.g. `13217,13212,13685,13207`). |
 | `platform` | string | NO | e.g. `WEB`. |
 | `channelId` | number | NO | The sales channel identifier. Use `1` for the web channel. |
+| `storefrontId` | number | NO | Storefront identifier. |
 
 The `tagIds` come from the product's shared state; each tag id maps to a named stamp.
 
@@ -41,7 +42,7 @@ Top-level wrapper: `{ "isSuccess", "statusCode", "result" }`. The `result` is an
 **Request:**
 
 ```
-GET https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/stamps/?tagIds=4905%2C8581%2C9637&platform=WEB&channelId=1
+GET https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/stamps/?tagIds=13217,13212,13685,13207&channelId=1&storefrontId=1&platform=web
 ```
 
 **Response:**

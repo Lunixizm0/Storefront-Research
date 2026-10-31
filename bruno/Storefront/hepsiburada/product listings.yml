@@ -1,0 +1,23 @@
+info:
+  name: product listings
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: https://www.hepsiburada.com/api/v1/product/listings/{{sku}}
+  auth: inherit
+
+runtime:
+  variables:
+    - name: sku
+      value:
+        type: number
+        data: HBCV0000EBN5K8
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

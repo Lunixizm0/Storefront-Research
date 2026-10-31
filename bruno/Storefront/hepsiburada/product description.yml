@@ -1,0 +1,67 @@
+info:
+  name: product description
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: https://www.hepsiburada.com/{{urun_tam_isim}}-p-{{sku}}
+  auth: inherit
+
+runtime:
+  variables:
+    - name: urun_tam_isim
+      value: razer-blackshark-v2-pro-2023-kablosuz-gaming-kulaklik-beyaz-rz04-04530200-r3m1
+    - name: sku
+      value: HBCV00004MW5Q6
+  scripts:
+    - type: after-response
+      code: |-
+        const html = String(res.getBody() || "");
+
+        function decodeHtml(s) {
+          return s
+            .replace(/&amp;/g, "&")
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;|&apos;/g, "'")
+            .replace(/&nbsp;|&#160;/g, " ")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&#x([0-9a-f]+);/gi, (_, h) =>
+              String.fromCodePoint(parseInt(h, 16))
+            )
+            .replace(/&#(\d+);/g, (_, n) =>
+              String.fromCodePoint(parseInt(n, 10))
+            );
+        }
+
+        const containerIndex = html.indexOf('data-test-id="ProductDescription"');
+
+        let description = "";
+
+        if (containerIndex !== -1) {
+          const container = html.slice(containerIndex, containerIndex + 15000);
+
+          const heading = container.match(
+            /<h[1-6]\b[^>]*>([\s\S]*?)<\/h[1-6]\s*>/i
+          );
+
+          if (heading) {
+            description = decodeHtml(
+              heading[1].replace(/<[^>]+>/g, " ")
+            ).replace(/\s+/g, " ").trim();
+          }
+        }
+
+        bru.setEnvVar("hepsiburada_description", description);
+
+        console.log("DESCRIPTION:", description || "BULUNAMADI");
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+  omitHeaders:
+    - User-Agent

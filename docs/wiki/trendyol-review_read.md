@@ -21,15 +21,15 @@ GET https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/revi
 
 Mimic a browser request; the `x-agentname` / `x-web-req-source` / `Origin` combination together with a `csrf-secret` cookie is what bypasses the storefront gateway anti-bot checks (tested successfully with plain `requests`):
 
-| Header | Description |
-| --- | --- |
-| `User-Agent` | Browser user-agent string. |
-| `Accept` | `application/json, text/plain, */*` |
-| `Accept-Language` | e.g. `tr-TR,tr;q=0.9,en-US;q=0.8` |
-| `x-agentname` | `StorefrontProductGateway` |
-| `x-web-req-source` | `StorefrontProductGateway` |
-| `Origin` | `https://www.trendyol.com` |
-| `Cookie` | `platform=web; AZ_SELECTED=false; storefrontId=1; countryCode=TR; language=tr; csrf-secret=...` |
+| Header | Required | Description |
+| --- | --- | --- |
+| `User-Agent` | Yes | Browser user-agent string. |
+| `Accept` | No | `application/json, text/plain, */*` |
+| `Accept-Language` | No | e.g. `tr-TR,tr;q=0.9,en-US;q=0.8` |
+| `x-agentname` | No | `StorefrontProductGateway` |
+| `x-web-req-source` | No | `StorefrontProductGateway` |
+| `Origin` | No | `https://www.trendyol.com` |
+| `Cookie` | | `platform=web; AZ_SELECTED=false; storefrontId=1; countryCode=TR; language=tr; csrf-secret=...` |
 
 ## Response
 

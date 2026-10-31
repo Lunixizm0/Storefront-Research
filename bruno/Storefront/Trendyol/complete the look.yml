@@ -1,0 +1,44 @@
+info:
+  name: complete the look
+  type: http
+  seq: 16
+
+http:
+  method: GET
+  url: https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/complete-the-look/markers?contentId=1081766367&intersactionAreaPadding=5&pointLabelGap=30&labelsGap=4&labelHeight=28&imageSize=398x597&labelPrefix=+&culture=tr-TR&channelId=1
+  params:
+    - name: contentId
+      value: "1081766367"
+      type: query
+    - name: intersactionAreaPadding
+      value: "5"
+      type: query
+    - name: pointLabelGap
+      value: "30"
+      type: query
+    - name: labelsGap
+      value: "4"
+      type: query
+    - name: labelHeight
+      value: "28"
+      type: query
+    - name: imageSize
+      value: 398x597
+      type: query
+    - name: labelPrefix
+      value: +
+      type: query
+    - name: culture
+      value: tr-TR
+      type: query
+    - name: channelId
+      value: "1"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

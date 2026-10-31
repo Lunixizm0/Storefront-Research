@@ -1,0 +1,44 @@
+info:
+  name: taksit ve kredi teklifleri
+  type: http
+  seq: 14
+
+http:
+  method: GET
+  url: https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/installment/?amount=4199&totalAmount=4199&categoryId=1058&categoryIds=1058&codEligible=true&clientPage=PDP&isUserTyPlusActive=false&groupTagIds=eac211e6-2e86-42fa-a755-87479743934a&channelId=1
+  params:
+    - name: amount
+      value: "4199"
+      type: query
+    - name: totalAmount
+      value: "4199"
+      type: query
+    - name: categoryId
+      value: "1058"
+      type: query
+    - name: categoryIds
+      value: "1058"
+      type: query
+    - name: codEligible
+      value: "true"
+      type: query
+    - name: clientPage
+      value: PDP
+      type: query
+    - name: isUserTyPlusActive
+      value: "false"
+      type: query
+    - name: groupTagIds
+      value: eac211e6-2e86-42fa-a755-87479743934a
+      type: query
+    - name: channelId
+      value: "1"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

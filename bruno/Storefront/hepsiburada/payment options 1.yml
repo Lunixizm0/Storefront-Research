@@ -1,0 +1,27 @@
+info:
+  name: payment options
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: https://www.hepsiburada.com/api/v1/paymentOptions
+  body:
+    type: json
+    data: |-
+      {
+        "userId": "d0965061-6de7-4275-9138-7bbe5f942d90",
+        "affordabilityRequest": {
+          "product": null,
+          "additionalData": null,
+          "definitionId": "559"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

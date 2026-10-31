@@ -1,0 +1,23 @@
+info:
+  name: ask to seller
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://api-asktoseller.hepsiburada.com/api/v2.0/products/{{sku}}/merchants/accept-questions
+  auth: inherit
+
+runtime:
+  variables:
+    - name: sku
+      value: HBCV0000EBN5K8
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+  omitHeaders:
+    - User-Agent

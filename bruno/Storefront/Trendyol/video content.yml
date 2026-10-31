@@ -1,0 +1,25 @@
+info:
+  name: video content
+  type: http
+  seq: 10
+
+http:
+  method: GET
+  url: https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/video-content/{{videoId}}?channelId=1
+  params:
+    - name: channelId
+      value: "1"
+      type: query
+  auth: inherit
+
+runtime:
+  variables:
+    - name: videoId
+      value: 6d1ee37d-be18-4bf1-a17f-464d7c2a3643
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -12,9 +12,9 @@ POST https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/vas
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `storefrontId` | number | Yes | e.g. `1`. |
-| `language` | string | Yes | e.g. `tr`. |
-| `channelId` | number | Yes | The sales channel identifier. Use `1` for the web channel. |
+| `storefrontId` | number | NO | e.g. `1`. |
+| `language` | string | NO | e.g. `tr`. |
+| `channelId` | number | NO | The sales channel identifier. Use `1` for the web channel. |
 
 ## Request Body (required)
 

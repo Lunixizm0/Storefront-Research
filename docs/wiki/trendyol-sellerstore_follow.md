@@ -18,8 +18,8 @@ GET https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/sell
 
 | Parameter | Type | Required | Description |
 | --- | --- | --- | --- |
-| `culture` | string | Yes | Locale used for number formatting, e.g. `tr-TR`. |
-| `checkCoupon` | boolean | Yes | e.g. `true`. |
+| `culture` | string | NO | Locale used for number formatting, e.g. `tr-TR`. |
+| `checkCoupon` | boolean | NO | e.g. `true`. |
 | `channelId` | number | Yes | The sales channel identifier. Use `1` for the web channel. |
 
 ## Example GET

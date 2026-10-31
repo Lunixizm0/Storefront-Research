@@ -1,0 +1,39 @@
+info:
+  name: mediamarkt
+  type: folder
+  seq: 3
+
+request:
+  headers:
+    - name: Origin
+      value: https://www.mediamarkt.com.tr
+    - name: apollographql-client-name
+      value: pwa-client-pqm
+    - name: apollographql-client-version
+      value: 8.490.2
+    - name: x-cacheable
+      value: "false"
+    - name: x-mms-language
+      value: tr
+    - name: x-mms-country
+      value: TR
+    - name: x-mms-salesline
+      value: Media
+    - name: x-flow-id
+      value: "{{$randomUUID}}"
+  auth: inherit
+  variables:
+    - name: uuid
+      value: "{{uuid}}"
+  scripts:
+    - type: before-request
+      code: |-
+        const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+
+        bru.setVar("uuid", uuid);
+
+        console.log("Generated UUID:", uuid);

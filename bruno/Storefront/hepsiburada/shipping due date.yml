@@ -1,0 +1,52 @@
+info:
+  name: shipping due date
+  type: http
+  seq: 7
+
+http:
+  method: POST
+  url: https://shipping-external.hepsiburada.com/duedateapi/querymodel/withtext/v2
+  body:
+    type: json
+    data: |-
+      {
+        "queryModels": [
+          {
+            "sku": "HBCV0000EBN5K8",
+            "listingId": "0f6040d3-dda6-43af-bbf0-0eb838c800b2",
+            "definitionName": "Pike Takımları",
+            "warehouseId": "BIRINCIL",
+            "shipmentDay": 1,
+            "shippingProfileId": "5d8509ce-e834-4cfc-be1b-73c107e9f818",
+            "deci": 1,
+            "inStockDate": "",
+            "tags": ["1200-300-home-kuponu", "..."],
+            "isBuyBoxWinner": true,
+            "quantity": 1,
+            "merchantId": "9040f2fb-b962-4d99-bc4d-27626d64ad92",
+            "merchantCity": "BURSA",
+            "merchantCountry": "TÜRKİYE",
+            "shipmentDaysPredictedByHb": 2,
+            "customerId": "d0965061-6de7-4275-9138-7bbe5f942d90",
+            "availableWarehouses": []
+          }
+        ],
+        "customerId": "d0965061-6de7-4275-9138-7bbe5f942d90",
+        "customerLocation": "",
+        "customerCity": "",
+        "customerTown": "",
+        "customerTownCode": "",
+        "customerDistrict": "",
+        "customerDistrictCode": "",
+        "anonymousId": "d0965061-6de7-4275-9138-7bbe5f942d90",
+        "locationDeliveryUnavailableDays": [],
+        "merchantSortingEnabled": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

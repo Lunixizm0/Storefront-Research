@@ -1,0 +1,45 @@
+info:
+  name: other sellers
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: https://www.hepsiburada.com/api/v1/otherMerchants
+  body:
+    type: json
+    data: |-
+      {
+        "userId": "d0965061-6de7-4275-9138-7bbe5f942d90",
+        "product": {
+          "productTags": ["1200-300-home-kuponu", "200-tl-visa-kampanyasi", "..."],
+          "sku": "HBCV0000EBN5K8",
+          "productId": "HBC0000EBN5K2",
+          "brand": "Elart",
+          "rootCategoryList": [60002028, 2147483618, 512226, 9010353],
+          "rootBuyingCategoryList": [9010353],
+          "definitionName": "Pike Takımları",
+          "definitionId": "559",
+          "taxVatRate": 10,
+          "campaignIds": [],
+          "otherMerchants": [
+            {
+              "productTags": ["..."],
+              "campaignIds": [],
+              "finalPriceOnSale": 942,
+              "minimumPriceForNLastDays": 370.69,
+              "merchantId": "9040f2fb-b962-4d99-bc4d-27626d64ad92",
+              "merchantName": "ELART",
+              "listingId": "0f6040d3-dda6-43af-bbf0-0eb838c800b2"
+            }
+          ]
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

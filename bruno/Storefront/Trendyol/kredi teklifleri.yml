@@ -1,0 +1,26 @@
+info:
+  name: kredi teklifleri
+  type: http
+  seq: 13
+
+http:
+  method: GET
+  url: https://coc-webview.trendyol.com/api/p/monthly-payments/calculated?price=10000.0&maxTerm=99999&bankCategoryId=13
+  params:
+    - name: price
+      value: "10000.0"
+      type: query
+    - name: maxTerm
+      value: "99999"
+      type: query
+    - name: bankCategoryId
+      value: "13"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,39 @@
+info:
+  name: vas
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: https://apigw.trendyol.com/discovery-storefront-trproductgw-service/api/vas/
+  params:
+    - name: storefrontId
+      value: "1"
+      type: query
+      disabled: true
+    - name: language
+      value: tr
+      type: query
+      disabled: true
+    - name: channelId
+      value: "1"
+      type: query
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "categoryId": 1058,
+        "brandId": 11079,
+        "sellerId": 968,
+        "sellingPrice": 3839,
+        "attributes": []
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

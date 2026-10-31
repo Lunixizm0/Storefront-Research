@@ -234,3 +234,13 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 uv.lock
+
+# Secrets
+**/.env*
+
+# Dependencies
+**/node_modules
+
+# OS files
+**/.DS_Store
+**/Thumbs.db

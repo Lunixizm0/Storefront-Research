@@ -1,0 +1,19 @@
+info:
+  name: Trendyol
+  type: folder
+  seq: 1
+
+request:
+  headers:
+    - name: x-agentname
+      value: StorefrontProductGateway
+      description: zorunlu değil
+    - name: x-web-req-source
+      value: StorefrontProductGateway
+      description: zorunlu değil
+    - name: Cookie
+      value: platform=web; AZ_SELECTED=false; storefrontId=1; countryCode=TR; language=tr
+    - name: Origin
+      value: https://www.trendyol.com
+      description: zorunlu değil
+  auth: inherit
